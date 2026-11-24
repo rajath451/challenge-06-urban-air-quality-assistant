@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: 'class', theme: { extend: { 'colors': { 'error-container': '#ffdad6', 'surface-container-lowest': '#ffffff', 'surface-container-high': '#dce9ff', 'on-secondary-fixed': '#002114', 'surface-container-low': '#eff4ff', 'secondary-fixed-dim': '#68dba9', 'on-error': '#ffffff', 'tertiary-container': '#cc4900', 'error': '#ba1a1a', 'primary-fixed': '#cce5ff', 'on-tertiary-fixed-variant': '#7f2b00', 'on-primary-container': '#fdfcff', 'outline': '#707881', 'outline-variant': '#bfc7d2', 'on-tertiary': '#ffffff', 'on-secondary-fixed-variant': '#005137', 'secondary-fixed': '#85f8c4', 'on-background': '#0b1c30', 'on-error-container': '#93000a', 'primary': '#006194', 'on-surface-variant': '#3f4850', 'secondary': '#006c4a', 'surface-bright': '#f8f9ff', 'on-tertiary-fixed': '#370e00', 'surface-container': '#e5eeff', 'on-primary': '#ffffff', 'on-secondary-container': '#00714e', 'tertiary-fixed': '#ffdbce', 'inverse-on-surface': '#eaf1ff', 'tertiary': '#a33900', 'inverse-surface': '#213145', 'on-surface': '#0b1c30', 'on-primary-fixed-variant': '#004b73', 'surface-tint': '#006398', 'on-tertiary-container': '#fffbff', 'surface-dim': '#cbdbf5', 'primary-fixed-dim': '#93ccff', 'surface-variant': '#d3e4fe', 'tertiary-fixed-dim': '#ffb599', 'on-secondary': '#ffffff', 'inverse-primary': '#93ccff', 'secondary-container': '#82f5c1', 'surface-container-highest': '#d3e4fe', 'surface': '#f8f9ff', 'background': '#f8f9ff', 'primary-container': '#007bb9', 'on-primary-fixed': '#001d31' }, 'borderRadius': { 'DEFAULT': '0.25rem', 'lg': '0.5rem', 'xl': '0.75rem', 'full': '9999px' }, 'spacing': { 'gutter': '1.5rem', 'space-lg': '1.5rem', 'space-sm': '0.5rem', 'margin-mobile': '1rem', 'space-xs': '0.25rem', 'gutter-mobile': '0.75rem', 'space-xl': '2.5rem', 'margin': '2rem', 'space-md': '1rem' }, 'fontFamily': { 'telemetry-lg': ['JetBrains Mono'], 'body-md': ['Inter'], 'headline-sm': ['Inter'], 'headline-lg': ['Inter'], 'headline-lg-mobile': ['Inter'], 'headline-md': ['Inter'], 'body-sm': ['Inter'], 'telemetry-md': ['JetBrains Mono'], 'display-lg-mobile': ['Inter'], 'body-lg': ['Inter'], 'label-md': ['Inter'], 'label-mono': ['JetBrains Mono'], 'display-lg': ['Inter'] }, 'fontSize': { 'telemetry-lg': ['32px', { 'lineHeight': '36px', 'letterSpacing': '-0.02em', 'fontWeight': '500' }], 'body-md': ['14px', { 'lineHeight': '20px', 'letterSpacing': '0em', 'fontWeight': '400' }], 'headline-sm': ['18px', { 'lineHeight': '26px', 'letterSpacing': '-0.01em', 'fontWeight': '600' }], 'headline-lg': ['32px', { 'lineHeight': '40px', 'letterSpacing': '-0.02em', 'fontWeight': '600' }], 'headline-lg-mobile': ['24px', { 'lineHeight': '32px', 'letterSpacing': '-0.015em', 'fontWeight': '600' }], 'headline-md': ['24px', { 'lineHeight': '32px', 'letterSpacing': '-0.015em', 'fontWeight': '500' }], 'body-sm': ['12px', { 'lineHeight': '16px', 'letterSpacing': '0.005em', 'fontWeight': '400' }], 'telemetry-md': ['16px', { 'lineHeight': '20px', 'letterSpacing': '0em', 'fontWeight': '500' }], 'display-lg-mobile': ['36px', { 'lineHeight': '44px', 'letterSpacing': '-0.02em', 'fontWeight': '600' }], 'body-lg': ['16px', { 'lineHeight': '24px', 'letterSpacing': '-0.005em', 'fontWeight': '400' }], 'label-md': ['12px', { 'lineHeight': '16px', 'letterSpacing': '0.02em', 'fontWeight': '500' }], 'label-mono': ['11px', { 'lineHeight': '14px', 'letterSpacing': '0.04em', 'fontWeight': '500' }], 'display-lg': ['56px', { 'lineHeight': '64px', 'letterSpacing': '-0.03em', 'fontWeight': '600' }] } } } };</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 z-50 bg-surface/80 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 w-full px-margin flex items-center justify-between gap-gutter"><div class="flex items-center gap-space-md shrink-0"><img alt="AeroPulse Brand Mark" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5_o3LqwJLe0O5io8ttNnKVe1PMnqIHD9oSWvT0I--f0QznKEz3nw62ewfItsExZ-W1RtO62PCTiOk4Ij9E7IoW5GTa8Nf0_tzwFVIc1ZJIIALzzNRHDxXFdtSjifjPGx9sQlbF-a84SGhBmgMvHUqNKYAg9IO6oCIT3T3lMSNZxKMdfFq6EucZBbggYvJ1TkvXUK5uOEqOM9FpbAogL6yxzCfZplEAxg-a0_0BTQ"/><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">AeroPulse</span><span class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-primary font-label-mono text-label-mono uppercase tracking-wider">Atmospheric Intelligence</span></div></div></div><nav class="hidden xl:flex items-center gap-space-xs bg-surface-container-low/70 p-1 rounded-xl" data-active-classes="bg-primary text-on-primary font-body-md text-body-md rounded-lg shadow-sm"><a class="px-space-md py-space-xs rounded-lg text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="overview" href="#">Overview</a><a aria-current="page" class="px-space-md py-space-xs transition-all bg-primary text-on-primary font-body-md text-body-md rounded-lg shadow-sm" data-path="live-dashboard" href="#">Live Dashboard</a><a class="px-space-md py-space-xs rounded-lg text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="gemini-assistant" href="#">Gemini Assistant</a><a class="px-space-md py-space-xs rounded-lg text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="hacks-and-routine" href="#">Hacks &amp; Routine</a><a class="px-space-md py-space-xs rounded-lg text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="education-and-standards" href="#">Education &amp; Standards</a></nav><div class="flex items-center gap-space-sm shrink-0"><div class="hidden md:flex items-center gap-space-xs px-space-sm py-1.5 rounded-full bg-surface-container-lowest text-on-surface shadow-[0_1px_4px_rgba(0,0,0,0.04)]"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span></span><span class="font-label-mono text-label-mono text-on-surface">New Delhi, DL (Winter Smog Protocol Active)</span><span class="material-symbols-outlined text-outline text-sm">expand_more</span></div><div class="flex items-center gap-space-xs px-space-sm py-1.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono"><span class="material-symbols-outlined text-sm text-tertiary">air</span><span>AQI 184 · Unhealthy</span></div><div class="hidden 2xl:flex flex-col text-right font-label-mono text-label-mono text-outline leading-tight"><span>Updated 3m ago</span><span class="text-on-surface-variant">Open-Meteo &amp; US-EPA</span></div><div class="relative flex items-center pl-space-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmjKokaTkJ0Mi-bWqO4ldbCeT-EuytHWYgvV0_2a_Y82wQwqMVeK8Kjzg_4ny02GVta64EdyySy-HkOfrkcn0AdQURctHZtRUA773JW8Ttn4AOWAhupITQYufEhwgrz23yg_B4vBWRmdMiH423DCxotTl1pFUBwhX45fnSPQrRmf1KGHLbnNoPHdnFXbLLzSl7VvEa3i87daGRShSjAcLNPKfiKzuOY0cMp9QLuuo"/><span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-secondary ring-2 ring-surface"></span></div></div></div></header><main class="w-full pt-20 bg-surface"><div class="flex flex-col w-full pb-space-xl">
+<!-- Top Telemetry & Control Bar -->
+<div class="w-full px-margin py-space-md bg-surface-container-lowest/80 backdrop-blur-md shadow-sm">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<!-- Location Selector & Sensor Meta -->
+<div class="flex flex-wrap items-center gap-space-md">
+<div class="relative">
+<button class="flex items-center gap-space-sm px-space-md py-2 bg-surface-container-low hover:bg-surface-container transition-colors rounded-lg text-on-surface" id="location-dropdown-btn">
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">location_on</span>
+<div class="flex flex-col text-left">
+<span class="font-label-mono text-label-mono text-outline uppercase tracking-wider">Active Monitoring Station</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface flex items-center gap-1">
+                New Delhi (Connaught Place &amp; NCR)
+                <span class="material-symbols-outlined text-sm">expand_more</span>
+</span>
+</div>
+</button>
+<div class="hidden absolute top-full left-0 mt-1.5 w-72 bg-surface-container-lowest shadow-xl rounded-xl p-2 z-50" id="location-menu">
+<span class="px-3 py-1 text-outline font-label-mono text-label-mono uppercase block">Select Geospatial Cluster</span>
+<div class="flex flex-col gap-0.5 mt-1 font-body-sm text-body-sm">
+<button class="flex items-center justify-between w-full px-3 py-2 text-left rounded-lg bg-surface-container-high text-primary font-semibold">
+<span>New Delhi, IN</span>
+<span class="font-label-mono text-tertiary">AQI 184</span>
+</button>
+<button class="flex items-center justify-between w-full px-3 py-2 text-left rounded-lg hover:bg-surface-container text-on-surface transition-colors">
+<span>Beijing (Chaoyang), CN</span>
+<span class="font-label-mono text-secondary">AQI 42</span>
+</button>
+<button class="flex items-center justify-between w-full px-3 py-2 text-left rounded-lg hover:bg-surface-container text-on-surface transition-colors">
+<span>Salt Lake City (Valley), US</span>
+<span class="font-label-mono text-tertiary">AQI 112</span>
+</button>
+<button class="flex items-center justify-between w-full px-3 py-2 text-left rounded-lg hover:bg-surface-container text-on-surface transition-colors">
+<span>Milan (Lombardy Basin), IT</span>
+<span class="font-label-mono text-on-surface-variant">AQI 95</span>
+</button>
+<button class="flex items-center justify-between w-full px-3 py-2 text-left rounded-lg hover:bg-surface-container text-on-surface transition-colors">
+<span>London (Marylebone), UK</span>
+<span class="font-label-mono text-secondary">AQI 31</span>
+</button>
+<button class="flex items-center justify-between w-full px-3 py-2 text-left rounded-lg hover:bg-surface-container text-on-surface transition-colors">
+<span>Los Angeles (Basin), US</span>
+<span class="font-label-mono text-on-surface-variant">AQI 68</span>
+</button>
+<div class="h-px bg-surface-variant my-1"></div>
+<button class="flex items-center gap-2 w-full px-3 py-2 text-left rounded-lg hover:bg-surface-container text-primary font-medium">
+<span class="material-symbols-outlined text-sm">my_location</span>
+<span>Custom Coordinate / GPS</span>
+</button>
+</div>
+</div>
+</div>
+<div class="hidden sm:flex items-center gap-space-sm pl-space-sm">
+<div class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container rounded-md">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-label-mono text-label-mono text-on-surface-variant">Feed: Open-Meteo CAMS</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container rounded-md">
+<span class="font-label-mono text-label-mono text-on-surface-variant">Standard: US-EPA AQI</span>
+</div>
+<div class="hidden md:flex items-center gap-1.5 px-2.5 py-1 bg-surface-container rounded-md">
+<span class="font-label-mono text-label-mono text-outline">Sensor ID: Pusa #402</span>
+</div>
+</div>
+</div>
+<!-- Live Refresh & Synced State -->
+<div class="flex items-center justify-between sm:justify-end gap-space-md">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-label-mono text-label-mono">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span id="sync-timestamp">Refreshed 2 mins ago</span>
+</div>
+<button class="flex items-center gap-1.5 px-space-md py-2 bg-primary text-on-primary hover:bg-primary-container transition-all rounded-lg font-body-md text-body-md font-medium shadow-sm" id="refresh-telemetry-btn">
+<span class="material-symbols-outlined text-sm transition-transform duration-700" id="refresh-icon">sync</span>
+<span>Refresh Sensor Data</span>
+</button>
+</div>
+</div>
+<!-- Meteorological Hazard Inversion Strip -->
+<div class="mt-space-md p-space-sm bg-tertiary-fixed text-on-tertiary-fixed rounded-xl flex items-center justify-between gap-space-sm flex-wrap shadow-sm">
+<div class="flex items-center gap-space-sm">
+<span class="flex items-center justify-center w-7 h-7 rounded-lg bg-tertiary text-on-tertiary shrink-0">
+<span class="material-symbols-outlined text-sm">warning</span>
+</span>
+<div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-space-sm font-body-sm text-body-sm">
+<span class="font-semibold text-tertiary tracking-tight">Severe Winter Inversion Advisory</span>
+<span class="hidden sm:inline text-outline">•</span>
+<span>Trapped particulate matter PM2.5 resting at 118.4 µg/m³. Boundary layer height depressed below 320m. Sensitive groups limit outdoor exertion.</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs font-label-mono text-label-mono text-tertiary font-medium">
+<span>Protocol: GRAP Stage-III</span>
+<span class="material-symbols-outlined text-sm">shield</span>
+</div>
+</div>
+</div>
+<div class="w-full px-margin mt-space-lg flex flex-col gap-space-xl">
+<!-- Primary Showcase: Asymmetric AQI Visual Dial & Dynamic Atmospheric Conditions -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- Primary Core Metric Gauge -->
+<div class="lg:col-span-8 bg-surface-container-lowest rounded-2xl p-space-lg shadow-md flex flex-col justify-between relative overflow-hidden">
+<!-- Ambient Spectral Glow Container -->
+<div class="absolute -right-20 -top-20 w-96 h-96 rounded-full bg-gradient-to-br from-tertiary-container/15 via-tertiary/10 to-transparent pointer-events-none blur-3xl"></div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm z-10">
+<div>
+<div class="flex items-center gap-space-xs font-label-mono text-label-mono text-outline uppercase tracking-wider">
+<span>Atmospheric Index Matrix</span>
+<span>/</span>
+<span class="text-tertiary font-semibold">Continuous Real-Time Telemetry</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mt-1">Air Quality Composite</h1>
+</div>
+<div class="flex items-center gap-2 px-space-md py-1.5 bg-tertiary-fixed text-on-tertiary-fixed rounded-full w-fit">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary animate-pulse"></span>
+<span class="font-label-mono text-label-mono font-semibold uppercase tracking-wider">Unhealthy (Tier 4)</span>
+</div>
+</div>
+<!-- Gauge Numerical Readout & Dial Visualization -->
+<div class="my-space-lg grid grid-cols-1 md:grid-cols-12 items-center gap-space-lg z-10">
+<!-- Radial Progress SVG Display -->
+<div class="md:col-span-5 flex flex-col items-center justify-center relative">
+<svg class="w-56 h-56 transform -rotate-90" viewbox="0 0 120 120">
+<!-- Background Circle Track -->
+<circle class="text-surface-container" cx="60" cy="60" fill="none" r="48" stroke="currentColor" stroke-dasharray="301.6" stroke-dashoffset="0" stroke-linecap="round" stroke-width="9"></circle>
+<!-- Active Value Arc (184 out of 500 = 36.8% of dial) -->
+<circle class="text-tertiary" cx="60" cy="60" fill="none" r="48" stroke="currentColor" stroke-dasharray="301.6" stroke-dashoffset="190.6" stroke-linecap="round" stroke-width="9"></circle>
+</svg>
+<div class="absolute flex flex-col items-center justify-center text-center">
+<span class="font-display-lg text-display-lg font-bold text-on-surface tracking-tighter" id="core-aqi-num">184</span>
+<span class="font-label-mono text-label-mono uppercase tracking-widest text-outline -mt-1">US-EPA AQI</span>
+<span class="mt-1 font-body-sm text-body-sm text-tertiary font-semibold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-xs">trending_up</span> +14 vs 6hr ago
+              </span>
+</div>
+</div>
+<!-- Comprehensive Health Implication Synopsis -->
+<div class="md:col-span-7 flex flex-col gap-space-sm">
+<div class="p-space-md bg-surface-container-low rounded-xl">
+<span class="font-label-mono text-label-mono text-outline uppercase tracking-wider block mb-1">Exposure Equivalence Metric</span>
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-tertiary text-2xl">smoking_rooms</span>
+<p class="font-body-md text-body-md text-on-surface">
+                  Breathing outdoor ambient air today for <span class="font-semibold text-on-surface">2 hours</span> is biologically equivalent to inhaling smoke from <span class="font-semibold text-tertiary">~4.2 cigarettes</span>.
+                </p>
+</div>
+</div>
+<!-- Gradient Comparative Bar -->
+<div class="flex flex-col gap-1.5 mt-1">
+<div class="flex justify-between items-center font-label-mono text-label-mono text-outline">
+<span>0 Good</span>
+<span>100 Moderate</span>
+<span class="text-tertiary font-bold">184 Current</span>
+<span>300 Severe</span>
+<span>500+</span>
+</div>
+<div class="h-3 w-full rounded-full bg-surface-container flex overflow-hidden relative">
+<div class="h-full w-[10%] bg-secondary"></div>
+<div class="h-full w-[10%] bg-secondary-container"></div>
+<div class="h-full w-[10%] bg-tertiary-fixed"></div>
+<div class="h-full w-[10%] bg-tertiary"></div>
+<div class="h-full w-[20%] bg-tertiary-container"></div>
+<div class="h-full w-[40%] bg-error"></div>
+<!-- Pinhead Indicator -->
+<div class="absolute top-0 bottom-0 left-[36.8%] w-1.5 bg-surface-container-lowest shadow-[0_0_8px_rgba(0,0,0,0.5)] transform -translate-x-1/2"></div>
+</div>
+<div class="grid grid-cols-6 text-[10px] font-label-mono text-outline-variant text-center pt-0.5">
+<span>Good (0-50)</span>
+<span>Mod (51-100)</span>
+<span>Sens (101-150)</span>
+<span class="text-tertiary font-semibold">Unhealthy (151-200)</span>
+<span>Very Unh (201-300)</span>
+<span>Hazard (301+)</span>
+</div>
+</div>
+<div class="flex items-center gap-2 pt-1 font-body-sm text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-base">masks</span>
+<span>Strict directive: N95 or FFP2 respirator mandate for continuous outdoor exposure.</span>
+</div>
+</div>
+</div>
+<!-- Footing Diagnostic Real-time Tickers -->
+<div class="pt-space-md border-t-0 bg-surface-container-low -mx-space-lg -mb-space-lg p-space-md px-space-lg flex flex-wrap items-center justify-between gap-space-sm font-label-mono text-label-mono text-on-surface-variant">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-outline text-sm">cloud_download</span>
+<span>Dominant Pollutant: <strong class="text-on-surface font-semibold">Fine Particulate (PM2.5)</strong></span>
+</div>
+<div class="flex items-center gap-space-md">
+<span>Critical Micrograms: <strong class="text-tertiary">118.4 µg/m³</strong></span>
+<span>Mixing Layer: <strong class="text-on-surface">310m AGL</strong></span>
+</div>
+</div>
+</div>
+<!-- Right Meteorological Inversion Sidecar -->
+<div class="lg:col-span-4 bg-surface-container-lowest rounded-2xl p-space-lg shadow-md flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-mono text-label-mono text-outline uppercase tracking-wider">Atmospheric Dynamics</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-mono text-label-mono">Inversion Active</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Microclimate Coupling</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+            Boundary layer dynamics trap combustion gases in low atmospheric tiers due to cold air cap.
+          </p>
+<div class="grid grid-cols-2 gap-space-sm mt-space-md">
+<!-- Temperature Box -->
+<div class="p-space-sm bg-surface-container-low rounded-xl flex flex-col">
+<span class="font-label-mono text-label-mono text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">thermostat</span> Temp
+              </span>
+<span class="font-telemetry-lg text-telemetry-lg text-on-surface mt-1">16.2<span class="text-body-md text-outline">°C</span></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Dew Point 13.1°C</span>
+</div>
+<!-- Relative Humidity Box -->
+<div class="p-space-sm bg-surface-container-low rounded-xl flex flex-col">
+<span class="font-label-mono text-label-mono text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">humidity_mid</span> Humidity
+              </span>
+<span class="font-telemetry-lg text-telemetry-lg text-primary mt-1">82<span class="text-body-md text-outline">%</span></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">High condensation</span>
+</div>
+<!-- Wind Vector Box -->
+<div class="p-space-sm bg-surface-container-low rounded-xl flex flex-col">
+<span class="font-label-mono text-label-mono text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">air</span> Wind Vector
+              </span>
+<span class="font-telemetry-md text-telemetry-md text-on-surface mt-1 font-semibold">3.8 km/h NW</span>
+<span class="font-body-sm text-body-sm text-error mt-0.5 flex items-center gap-0.5">
+<span class="material-symbols-outlined text-xs">block</span> Stagnant air mass
+              </span>
+</div>
+<!-- Solar / UV Index Box -->
+<div class="p-space-sm bg-surface-container-low rounded-xl flex flex-col">
+<span class="font-label-mono text-label-mono text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">wb_sunny</span> Solar Index
+              </span>
+<span class="font-telemetry-lg text-telemetry-lg text-on-surface mt-1">2 <span class="text-body-md text-outline">UV</span></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Heavy haze filtration</span>
+</div>
+</div>
+</div>
+<div class="mt-space-md p-space-sm bg-surface-container rounded-xl flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-xl">airwave</span>
+<div class="flex flex-col">
+<span class="font-label-mono text-label-mono text-on-surface font-semibold">Ventilation Potential</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Extremely Low (Dispersion index 11.2 m²/s)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Pollutant Grid (6 Detailed Metric Cards with safety limits & WHO comparisons) -->
+<div class="flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-space-sm">
+<div>
+<div class="flex items-center gap-space-xs font-label-mono text-label-mono text-outline uppercase tracking-wider">
+<span>Telemetry Cluster #402</span>
+<span>•</span>
+<span>Spectroscopic Chemical Fractions</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mt-1">Pollutant Matrix &amp; WHO Guideline Exceedance</h2>
+</div>
+<div class="flex items-center gap-space-sm text-outline font-label-mono text-label-mono">
+<span>Target Standard: WHO 2021 Threshold</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-md">
+<!-- Metric Card 1: PM2.5 -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-mono text-label-mono text-on-surface-variant font-semibold">PM2.5 (Fine Inhalable)</span>
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-mono text-label-mono font-medium">7.9x WHO Target</span>
+</div>
+<div class="flex items-baseline gap-1.5 mt-2">
+<span class="font-telemetry-lg text-telemetry-lg text-tertiary font-bold">118.4</span>
+<span class="font-label-mono text-label-mono text-outline">µg/m³</span>
+</div>
+<!-- WHO Comparison Progress Bar -->
+<div class="mt-3">
+<div class="flex justify-between font-label-mono text-[10px] text-outline mb-1">
+<span>WHO Limit: 15.0 µg/m³</span>
+<span class="text-tertiary font-semibold">+689% Over</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+<div class="bg-tertiary h-full w-[85%] rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm bg-surface-container-low -mx-space-md -mb-space-md p-space-sm rounded-b-2xl">
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+              Primary lung &amp; bloodstream penetrator. Penetrates alveolar membrane triggering vascular inflammation.
+            </p>
+</div>
+</div>
+<!-- Metric Card 2: PM10 -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-mono text-label-mono text-on-surface-variant font-semibold">PM10 (Inhalable Dust)</span>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-label-mono font-medium">4.3x WHO Target</span>
+</div>
+<div class="flex items-baseline gap-1.5 mt-2">
+<span class="font-telemetry-lg text-telemetry-lg text-on-surface font-bold">214.2</span>
+<span class="font-label-mono text-label-mono text-outline">µg/m³</span>
+</div>
+<div class="mt-3">
+<div class="flex justify-between font-label-mono text-[10px] text-outline mb-1">
+<span>WHO Limit: 45.0 µg/m³</span>
+<span class="text-on-surface-variant font-semibold">+376% Over</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+<div class="bg-tertiary-container h-full w-[70%] rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm bg-surface-container-low -mx-space-md -mb-space-md p-space-sm rounded-b-2xl">
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+              Coarse particles from road dust resuspension, construction aggregate, and crustal crust abrasion.
+            </p>
+</div>
+</div>
+<!-- Metric Card 3: NO2 -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-mono text-label-mono text-on-surface-variant font-semibold">Nitrogen Dioxide (NO₂)</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-label-mono text-label-mono font-medium">Elevated</span>
+</div>
+<div class="flex items-baseline gap-1.5 mt-2">
+<span class="font-telemetry-lg text-telemetry-lg text-on-surface font-bold">54.2</span>
+<span class="font-label-mono text-label-mono text-outline">ppb</span>
+</div>
+<div class="mt-3">
+<div class="flex justify-between font-label-mono text-[10px] text-outline mb-1">
+<span>WHO Limit: 25.0 ppb</span>
+<span class="text-primary font-semibold">2.1x Standard</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+<div class="bg-primary h-full w-[54%] rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm bg-surface-container-low -mx-space-md -mb-space-md p-space-sm rounded-b-2xl">
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+              Tailpipe vehicular combustion byproducts. Aggravates bronchial sensitivity and airway constriction.
+            </p>
+</div>
+</div>
+<!-- Metric Card 4: CO -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-mono text-label-mono text-on-surface-variant font-semibold">Carbon Monoxide (CO)</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-mono text-label-mono font-medium">Moderate</span>
+</div>
+<div class="flex items-baseline gap-1.5 mt-2">
+<span class="font-telemetry-lg text-telemetry-lg text-on-surface font-bold">1,840</span>
+<span class="font-label-mono text-label-mono text-outline">µg/m³</span>
+</div>
+<div class="mt-3">
+<div class="flex justify-between font-label-mono text-[10px] text-outline mb-1">
+<span>WHO Limit: 4,000 µg/m³</span>
+<span class="text-secondary font-semibold">46% of Limit</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+<div class="bg-secondary-fixed-dim h-full w-[46%] rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm bg-surface-container-low -mx-space-md -mb-space-md p-space-sm rounded-b-2xl">
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+              Incomplete biomass and winter heating combustion. Reduces oxygen delivery to vital body organs.
+            </p>
+</div>
+</div>
+<!-- Metric Card 5: O3 -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-mono text-label-mono text-on-surface-variant font-semibold">Ozone (O₃ Ground Level)</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-mono text-label-mono font-medium">Optimal</span>
+</div>
+<div class="flex items-baseline gap-1.5 mt-2">
+<span class="font-telemetry-lg text-telemetry-lg text-secondary font-bold">28.1</span>
+<span class="font-label-mono text-label-mono text-outline">ppb</span>
+</div>
+<div class="mt-3">
+<div class="flex justify-between font-label-mono text-[10px] text-outline mb-1">
+<span>WHO Limit: 50.0 ppb</span>
+<span class="text-secondary font-semibold">Below Cap</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+<div class="bg-secondary h-full w-[28%] rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm bg-surface-container-low -mx-space-md -mb-space-md p-space-sm rounded-b-2xl">
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+              Low ground-level photolysis reaction due to winter cloud blanket and dense aerosol sunlight attenuation.
+            </p>
+</div>
+</div>
+<!-- Metric Card 6: SO2 -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-mono text-label-mono text-on-surface-variant font-semibold">Sulfur Dioxide (SO₂)</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-mono text-label-mono font-medium">Controlled</span>
+</div>
+<div class="flex items-baseline gap-1.5 mt-2">
+<span class="font-telemetry-lg text-telemetry-lg text-on-surface font-bold">18.6</span>
+<span class="font-label-mono text-label-mono text-outline">ppb</span>
+</div>
+<div class="mt-3">
+<div class="flex justify-between font-label-mono text-[10px] text-outline mb-1">
+<span>WHO Limit: 40.0 ppb</span>
+<span class="text-outline font-semibold">46% of Cap</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+<div class="bg-outline h-full w-[46%] rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm bg-surface-container-low -mx-space-md -mb-space-md p-space-sm rounded-b-2xl">
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+              Coal combustion point-sources and heavy diesel freight transport. Irritates respiratory tract mucous membranes.
+            </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Time-Series High-Density Visualizations -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- Chart Panel 1: 24-Hour Diurnal Dynamics -->
+<div class="lg:col-span-8 bg-surface-container-lowest p-space-lg rounded-2xl shadow-md flex flex-col justify-between">
+<div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-space-sm">
+<div>
+<span class="font-label-mono text-label-mono text-outline uppercase tracking-wider">Diurnal Cycle Telemetry</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">24-Hour Continuous Forecast &amp; History</h3>
+</div>
+<div class="flex items-center gap-space-xs font-label-mono text-label-mono">
+<span class="flex items-center gap-1 text-tertiary">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span> AQI Trend
+              </span>
+<span class="flex items-center gap-1 text-primary ml-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span> Temp Profile
+              </span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Critical diurnal inversion spike observed between 05:00 - 09:30 AM (Peak AQI 245). Solar radiative mixing yields brief dilution window near 15:00.
+          </p>
+<!-- High-Precision SVG Graph -->
+<div class="w-full mt-space-md">
+<div class="h-56 w-full relative">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 700 200">
+<defs>
+<lineargradient id="aqi-fill" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#cc4900" stop-opacity="0.35"></stop>
+<stop offset="100%" stop-color="#cc4900" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<!-- Horizontal Reference Gridlines -->
+<line class="text-surface-container-high" stroke="currentColor" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="700" y1="40" y2="40"></line>
+<line class="text-surface-container-high" stroke="currentColor" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="700" y1="90" y2="90"></line>
+<line class="text-surface-container-high" stroke="currentColor" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="700" y1="140" y2="140"></line>
+<!-- Safe Standard Bar Overlay (AQI 50 threshold line at y=170) -->
+<line class="text-secondary opacity-60" stroke="currentColor" stroke-dasharray="6 4" stroke-width="1.5" x1="0" x2="700" y1="168" y2="168"></line>
+<!-- AQI Area Fill -->
+<polygon fill="url(#aqi-fill)" points="0,95 50,75 100,45 150,30 200,38 250,70 300,105 350,115 400,125 450,108 500,85 550,68 600,60 650,72 700,88 700,200 0,200"></polygon>
+<!-- AQI Trend Line Curve -->
+<polyline class="text-tertiary" fill="none" points="0,95 50,75 100,45 150,30 200,38 250,70 300,105 350,115 400,125 450,108 500,85 550,68 600,60 650,72 700,88" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></polyline>
+<!-- Temperature Line Profile -->
+<polyline class="text-primary opacity-70" fill="none" points="0,170 50,175 100,180 150,185 200,180 250,165 300,145 350,135 400,130 450,140 500,155 550,165 600,172 650,176 700,180" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline>
+<!-- Active Point Marker at 14:00 (x=400, y=125) -->
+<circle class="fill-tertiary stroke-surface-container-lowest" cx="400" cy="125" r="5" stroke-width="2"></circle>
+<!-- Callout Flag -->
+<rect class="fill-on-surface" height="22" rx="4" width="50" x="375" y="92"></rect>
+<text class="fill-surface-container-lowest text-[10px] font-label-mono font-bold" text-anchor="middle" x="400" y="107">184 AQI</text>
+</svg>
+</div>
+<!-- X-Axis Timestamps -->
+<div class="flex justify-between items-center font-label-mono text-[11px] text-outline mt-2 pt-1 border-t-0">
+<span>00:00</span>
+<span>04:00</span>
+<span class="text-error font-semibold">08:00 (Peak 245)</span>
+<span>12:00</span>
+<span class="text-primary font-semibold">15:00 (Mixing 160)</span>
+<span>18:00</span>
+<span>21:00</span>
+<span>23:59</span>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm flex flex-wrap items-center justify-between gap-space-sm bg-surface-container-low p-space-sm rounded-xl font-label-mono text-label-mono">
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm text-secondary">check_circle</span>
+<span>WHO 24h Threshold Guideline Line Pinned (50 AQI)</span>
+</div>
+<span class="text-outline">Confidence Score: 94.2%</span>
+</div>
+</div>
+<!-- Chart Panel 2: PM2.5 vs PM10 Ratio Dynamics & Microscopic Composition -->
+<div class="lg:col-span-4 bg-surface-container-lowest p-space-lg rounded-2xl shadow-md flex flex-col justify-between">
+<div>
+<span class="font-label-mono text-label-mono text-outline uppercase tracking-wider">Aerosol Fraction Ratio</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-1">PM2.5 / PM10 Ratio</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+            Current ratio is <strong class="text-on-surface font-semibold">55.3%</strong>, showing dominant combustion aerosol over natural mineral soil dust.
+          </p>
+<!-- Split Ratio Bar Visualization -->
+<div class="mt-space-lg flex flex-col gap-space-sm">
+<div class="flex justify-between font-label-mono text-label-mono">
+<span class="text-tertiary font-semibold">Fine PM2.5 (118.4)</span>
+<span class="text-outline-variant font-semibold">Coarse Fraction (95.8)</span>
+</div>
+<div class="h-6 w-full rounded-xl bg-surface-container flex overflow-hidden p-1 gap-1">
+<div class="h-full bg-tertiary rounded-lg transition-all duration-500" style="width: 55.3%;"></div>
+<div class="h-full bg-surface-variant rounded-lg transition-all duration-500" style="width: 44.7%;"></div>
+</div>
+<div class="p-space-sm bg-surface-container-low rounded-xl flex flex-col gap-1 mt-space-sm">
+<span class="font-label-mono text-label-mono text-outline uppercase">Diagnostic Significance</span>
+<span class="font-body-sm text-body-sm text-on-surface">
+                A ratio &gt; 0.5 denotes localized fuel combustion, vehicular exhaust, and biomass burning rather than ambient wind-driven dust.
+              </span>
+</div>
+</div>
+<!-- Microscopic Distribution Breakdown -->
+<div class="mt-space-md flex flex-col gap-2 font-body-sm text-body-sm">
+<div class="flex items-center justify-between py-1">
+<span class="text-on-surface-variant flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span> Secondary Sulfate &amp; Nitrate
+              </span>
+<span class="font-label-mono font-semibold text-on-surface">42%</span>
+</div>
+<div class="flex items-center justify-between py-1">
+<span class="text-on-surface-variant flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-on-surface"></span> Elemental Black Carbon
+              </span>
+<span class="font-label-mono font-semibold text-on-surface">26%</span>
+</div>
+<div class="flex items-center justify-between py-1">
+<span class="text-on-surface-variant flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-outline"></span> Crustal Mineral Oxides
+              </span>
+<span class="font-label-mono font-semibold text-on-surface">19%</span>
+</div>
+<div class="flex items-center justify-between py-1">
+<span class="text-on-surface-variant flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary"></span> Organic Condensates
+              </span>
+<span class="font-label-mono font-semibold text-on-surface">13%</span>
+</div>
+</div>
+</div>
+<div class="mt-space-md p-space-sm bg-surface-container-high rounded-xl text-primary font-label-mono text-label-mono flex items-center gap-2">
+<span class="material-symbols-outlined text-base">science</span>
+<span>Optical Aerosol Depth: 0.84 τ</span>
+</div>
+</div>
+</div>
+<!-- 7-Day Air Quality & Temperature Inversion Synoptic Outlook -->
+<div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm mb-space-md">
+<div>
+<span class="font-label-mono text-label-mono text-outline uppercase tracking-wider">Synoptic Weather &amp; Chemistry Outlook</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-1">7-Day Cold Front &amp; Clearance Trajectory</h3>
+</div>
+<div class="flex items-center gap-1.5 px-3 py-1 bg-secondary-fixed text-on-secondary-fixed rounded-full font-label-mono text-label-mono">
+<span class="material-symbols-outlined text-sm">cyclone</span>
+<span>Western Disturbance Arrival: Friday +48h</span>
+</div>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-space-sm">
+<!-- Day 1: Today -->
+<div class="p-space-sm bg-tertiary-fixed/30 rounded-xl flex flex-col justify-between text-center relative overflow-hidden">
+<div class="w-full text-right"><span class="px-1.5 py-0.5 rounded text-[10px] font-label-mono bg-tertiary text-on-tertiary">TODAY</span></div>
+<div class="my-2">
+<span class="font-body-md text-body-md font-semibold text-on-surface block">Thu, 16</span>
+<span class="font-telemetry-lg text-telemetry-lg text-tertiary font-bold block my-1">184</span>
+<span class="font-label-mono text-[10px] text-tertiary uppercase font-medium">Unhealthy</span>
+</div>
+<div class="font-label-mono text-[11px] text-outline-variant pt-2 border-t border-surface-container">
+<span>16° / 8°C</span>
+<span class="block text-outline">Wind 4km/h</span>
+</div>
+</div>
+<!-- Day 2 -->
+<div class="p-space-sm bg-surface-container-low rounded-xl flex flex-col justify-between text-center">
+<div class="w-full text-right"><span class="px-1.5 py-0.5 rounded text-[10px] font-label-mono text-outline">D+1</span></div>
+<div class="my-2">
+<span class="font-body-md text-body-md font-semibold text-on-surface block">Fri, 17</span>
+<span class="font-telemetry-lg text-telemetry-lg text-error font-bold block my-1">210</span>
+<span class="font-label-mono text-[10px] text-error uppercase font-medium">Very Unh</span>
+</div>
+<div class="font-label-mono text-[11px] text-outline-variant pt-2 border-t border-surface-container">
+<span>15° / 7°C</span>
+<span class="block text-outline">Wind 3km/h</span>
+</div>
+</div>
+<!-- Day 3: Clearance Start -->
+<div class="p-space-sm bg-surface-container-low rounded-xl flex flex-col justify-between text-center">
+<div class="w-full text-right"><span class="px-1.5 py-0.5 rounded text-[10px] font-label-mono text-primary font-semibold">RAIN</span></div>
+<div class="my-2">
+<span class="font-body-md text-body-md font-semibold text-on-surface block">Sat, 18</span>
+<span class="font-telemetry-lg text-telemetry-lg text-tertiary font-bold block my-1">142</span>
+<span class="font-label-mono text-[10px] text-tertiary uppercase font-medium">Sensitive</span>
+</div>
+<div class="font-label-mono text-[11px] text-outline-variant pt-2 border-t border-surface-container">
+<span>13° / 9°C</span>
+<span class="block text-primary">Wind 18km/h</span>
+</div>
+</div>
+<!-- Day 4: Post Front Clean -->
+<div class="p-space-sm bg-secondary-fixed/20 rounded-xl flex flex-col justify-between text-center">
+<div class="w-full text-right"><span class="px-1.5 py-0.5 rounded text-[10px] font-label-mono text-secondary font-semibold">CLEAR</span></div>
+<div class="my-2">
+<span class="font-body-md text-body-md font-semibold text-on-surface block">Sun, 19</span>
+<span class="font-telemetry-lg text-telemetry-lg text-secondary font-bold block my-1">68</span>
+<span class="font-label-mono text-[10px] text-secondary uppercase font-medium">Moderate</span>
+</div>
+<div class="font-label-mono text-[11px] text-outline-variant pt-2 border-t border-surface-container">
+<span>18° / 6°C</span>
+<span class="block text-secondary">Wind 22km/h</span>
+</div>
+</div>
+<!-- Day 5 -->
+<div class="p-space-sm bg-secondary-fixed/20 rounded-xl flex flex-col justify-between text-center">
+<div class="w-full text-right"><span class="px-1.5 py-0.5 rounded text-[10px] font-label-mono text-outline">D+4</span></div>
+<div class="my-2">
+<span class="font-body-md text-body-md font-semibold text-on-surface block">Mon, 20</span>
+<span class="font-telemetry-lg text-telemetry-lg text-secondary font-bold block my-1">82</span>
+<span class="font-label-mono text-[10px] text-secondary uppercase font-medium">Moderate</span>
+</div>
+<div class="font-label-mono text-[11px] text-outline-variant pt-2 border-t border-surface-container">
+<span>19° / 8°C</span>
+<span class="block text-outline">Wind 14km/h</span>
+</div>
+</div>
+<!-- Day 6 -->
+<div class="p-space-sm bg-surface-container-low rounded-xl flex flex-col justify-between text-center">
+<div class="w-full text-right"><span class="px-1.5 py-0.5 rounded text-[10px] font-label-mono text-outline">D+5</span></div>
+<div class="my-2">
+<span class="font-body-md text-body-md font-semibold text-on-surface block">Tue, 21</span>
+<span class="font-telemetry-lg text-telemetry-lg text-tertiary font-bold block my-1">115</span>
+<span class="font-label-mono text-[10px] text-tertiary uppercase font-medium">Sensitive</span>
+</div>
+<div class="font-label-mono text-[11px] text-outline-variant pt-2 border-t border-surface-container">
+<span>17° / 8°C</span>
+<span class="block text-outline">Wind 7km/h</span>
+</div>
+</div>
+<!-- Day 7 -->
+<div class="p-space-sm bg-surface-container-low rounded-xl flex flex-col justify-between text-center">
+<div class="w-full text-right"><span class="px-1.5 py-0.5 rounded text-[10px] font-label-mono text-outline">D+6</span></div>
+<div class="my-2">
+<span class="font-body-md text-body-md font-semibold text-on-surface block">Wed, 22</span>
+<span class="font-telemetry-lg text-telemetry-lg text-tertiary font-bold block my-1">158</span>
+<span class="font-label-mono text-[10px] text-tertiary uppercase font-medium">Unhealthy</span>
+</div>
+<div class="font-label-mono text-[11px] text-outline-variant pt-2 border-t border-surface-container">
+<span>16° / 7°C</span>
+<span class="block text-outline">Wind 5km/h</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Activity Safety & Real-time Actionable Protocols -->
+<div class="flex flex-col gap-space-md">
+<div>
+<span class="font-label-mono text-label-mono text-outline uppercase tracking-wider">Preventive Action Protocol</span>
+<h2 class="font-headline-md text-headline-md text-on-surface mt-1">Health &amp; Activity Recommendations</h2>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Activity 1: Cardio -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between">
+<span class="flex items-center justify-center w-10 h-10 rounded-xl bg-error-container text-on-error-container">
+<span class="material-symbols-outlined">directions_run</span>
+</span>
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-mono text-[10px] font-bold uppercase">Hazardous</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mt-3">Jogging &amp; Outdoor Cardio</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1.5">
+<strong class="text-error">NOT RECOMMENDED</strong>. Strenuous exercise multiplies minute inhalation volume by up to 8x.
+            </p>
+</div>
+<div class="mt-space-md pt-space-xs font-label-mono text-label-mono text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>Best Window: 14:30 - 16:00 (AQI ~150)</span>
+</div>
+</div>
+<!-- Activity 2: Children & Vulnerable -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between">
+<span class="flex items-center justify-center w-10 h-10 rounded-xl bg-tertiary-fixed text-on-tertiary-fixed">
+<span class="material-symbols-outlined">child_care</span>
+</span>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-mono text-[10px] font-bold uppercase">Restricted</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mt-3">Children &amp; Senior Activity</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1.5">
+<strong class="text-tertiary">STRICTLY INDOORS</strong>. Keep school play sessions within HEPA-filtered modular facilities.
+            </p>
+</div>
+<div class="mt-space-md pt-space-xs font-label-mono text-label-mono text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span>Air cleaner target: CADR 450 m³/h</span>
+</div>
+</div>
+<!-- Activity 3: Ventilation -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between">
+<span class="flex items-center justify-center w-10 h-10 rounded-xl bg-surface-container text-on-surface">
+<span class="material-symbols-outlined">window</span>
+</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface font-label-mono text-[10px] font-bold uppercase">Closed</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mt-3">Window Ventilation</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1.5">
+<strong class="text-on-surface">KEEP SEALED</strong>. High ingress infiltration coefficient will spike interior PM concentrations.
+            </p>
+</div>
+<div class="mt-space-md pt-space-xs font-label-mono text-label-mono text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>10-min flash ventilate at 14:00 PM</span>
+</div>
+</div>
+<!-- Activity 4: Commuting -->
+<div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between">
+<span class="flex items-center justify-center w-10 h-10 rounded-xl bg-primary-fixed text-primary">
+<span class="material-symbols-outlined">directions_subway</span>
+</span>
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-primary font-label-mono text-[10px] font-bold uppercase">Protocol</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mt-3">Commute &amp; Transit Mode</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1.5">
+              Prioritize underground metro networks. Avoid two-wheelers and open auto-rickshaws during peak inversion.
+            </p>
+</div>
+<div class="mt-space-md pt-space-xs font-label-mono text-label-mono text-tertiary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">masks</span>
+<span>N95 Mask Mandate Active</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Data Attribution & Scientific Governance Badge -->
+<div class="p-space-md bg-surface-container-low rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md font-body-sm text-body-sm text-on-surface-variant">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-primary text-2xl">verified</span>
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Precision Atmospheric Telemetry Verification</span>
+<span>Calibrated via CAMS European Centre for Medium-Range Weather Forecasts &amp; US-EPA Equation Formula (40 CFR Part 58).</span>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0 font-label-mono text-label-mono text-outline">
+<span>Station Lat/Lon: 28.6328° N, 77.2197° E</span>
+<span>Accuracy: ±150m</span>
+</div>
+</div>
+</div>
+<!-- Interactive Logic for Controls -->
+<script>
+    (function initDashboard() {
+      const dropdownBtn = document.getElementById('location-dropdown-btn');
+      const dropdownMenu = document.getElementById('location-menu');
+      const refreshBtn = document.getElementById('refresh-telemetry-btn');
+      const refreshIcon = document.getElementById('refresh-icon');
+      const syncTimestamp = document.getElementById('sync-timestamp');
+      const aqiNum = document.getElementById('core-aqi-num');
+
+      // Dropdown toggle
+      dropdownBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!dropdownMenu.contains(e.target) && !dropdownBtn.contains(e.target)) {
+          dropdownMenu.classList.add('hidden');
+        }
+      });
+
+      // Refresh micro-interaction
+      refreshBtn.addEventListener('click', () => {
+        refreshIcon.classList.add('rotate-180');
+        refreshBtn.disabled = true;
+        refreshBtn.classList.add('opacity-75');
+        
+        setTimeout(() => {
+          refreshIcon.classList.remove('rotate-180');
+          refreshBtn.disabled = false;
+          refreshBtn.classList.remove('opacity-75');
+          syncTimestamp.textContent = 'Refreshed just now';
+          
+          // Subtle pulse flash on metric
+          aqiNum.classList.add('text-primary');
+          setTimeout(() => {
+            aqiNum.classList.remove('text-primary');
+          }, 600);
+        }, 800);
+      });
+    })();
+  </script>
+</div></main><footer class="w-full bg-surface-container-low mt-space-xl py-space-lg"><div class="w-full px-margin flex flex-col md:flex-row items-center justify-between gap-space-md font-body-sm text-body-sm text-on-surface-variant"><div class="flex flex-col sm:flex-row items-center gap-space-sm text-center sm:text-left"><span>© 2025 AeroPulse Intelligence Systems.</span><span class="hidden sm:inline text-outline-variant">•</span><span>Attribution: Real-time telemetry via Open-Meteo Air Quality API</span><span class="hidden sm:inline text-outline-variant">•</span><span>Benchmark: WHO 2021 Global Air Quality Guidelines</span></div><div class="flex items-center gap-space-lg font-label-mono text-label-mono"><a class="hover:text-on-surface transition-colors" data-path="education-and-standards" href="#">WHO Standards</a><a class="hover:text-on-surface transition-colors" data-path="live-dashboard" href="#">Sensor Network</a><a class="hover:text-on-surface transition-colors" data-path="gemini-assistant" href="#">Diagnostics AI</a></div></div></footer></body></html>
