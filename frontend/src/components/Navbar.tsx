@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Wind,
   Compass,
@@ -13,7 +13,9 @@ import {
   ShieldAlert,
   User as UserIcon,
   LogOut,
-  Bell
+  Bell,
+  Menu,
+  X
 } from 'lucide-react';
 import { EnvironmentalReadings, LocationInfo } from '../types';
 import { User } from '../types/auth';
@@ -45,18 +47,19 @@ export const Navbar: React.FC<NavbarProps> = ({
   onLogout,
   onOpenPreferences
 }) => {
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const isAdmin = currentUser?.role === 'admin';
 
   const navItems = [
     { id: 'landing', label: 'Overview', icon: HomeIcon },
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'decisions', label: 'Decisions', icon: Compass, badge: 'Core' },
+    { id: 'decisions', label: 'Decisions', icon: Compass, badge: 'CORE' },
     { id: 'planner', label: 'Best Time Planner', icon: Calendar },
-    { id: 'homebreath', label: 'HomeBreath', icon: Wind, badge: 'Virtual' },
+    { id: 'homebreath', label: 'HomeBreath', icon: Wind, badge: 'VIRTUAL' },
     { id: 'exposure', label: 'Exposure Dose', icon: Activity },
-    { id: 'assistant', label: 'AI Copilot', icon: Sparkles, badge: 'Gemini' },
+    { id: 'assistant', label: 'AI Copilot', icon: Sparkles, badge: 'GEMINI' },
     { id: 'transparency', label: 'Transparency', icon: ShieldCheck },
-    ...(isAdmin ? [{ id: 'admin', label: 'Admin Console', icon: ShieldAlert, badge: 'Gov' }] : [])
+    ...(isAdmin ? [{ id: 'admin', label: 'Admin Console', icon: ShieldAlert, badge: 'GOV' }] : [])
   ];
 
   const naqiVal = readings ? readings.indian_naqi : '--';
@@ -65,158 +68,161 @@ export const Navbar: React.FC<NavbarProps> = ({
   // Indian NAQI color mapping
   const getNaqiColor = (cat: string) => {
     switch (cat) {
-      case 'Good': return '#006c4a';
+      case 'Good': return '#10b981';
       case 'Satisfactory': return '#059669';
       case 'Moderate': return '#d97706';
       case 'Poor': return '#ea580c';
       case 'Very Poor': return '#dc2626';
       case 'Severe': return '#7f1d1d';
-      default: return '#006c4a';
+      default: return '#10b981';
     }
   };
 
   const badgeColor = getNaqiColor(naqiCat);
   const cityName = currentLocation.name.split(',')[0].trim();
 
-  return (
-    <header className="sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200/90 dark:border-slate-800 shadow-xs transition-colors">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        
-        {/* Main Header Bar */}
-        <div className="flex items-center justify-between h-15 sm:h-18 gap-2 sm:gap-4">
+  const handleNavClick = (id: string) => {
+    setActiveTab(id);
+    setMobileDrawerOpen(false);
+  };
 
-          {/* Left: VayuCoach Brand & Tagline */}
-          <div
-            onClick={() => setActiveTab('landing')}
-            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none group shrink-0"
+  return (
+    <header className="sticky top-0 z-50 w-full bg-[#0B1320] border-b border-slate-800/80 shadow-md">
+      <div className="max-w-[1440px] mx-auto px-4 lg:px-6 h-16 flex items-center justify-between gap-4">
+        
+        {/* Left Brand Section (shrink-0, vertically centered, no clipping) */}
+        <div
+          onClick={() => handleNavClick('landing')}
+          className="flex items-center gap-3 cursor-pointer select-none group shrink-0"
+        >
+          <div className="w-9 h-9 rounded-lg bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <Wind className="w-5 h-5 text-emerald-400" />
+          </div>
+          <div className="flex flex-col justify-center">
+            <div className="flex items-center gap-2">
+              <span className="font-extrabold text-lg sm:text-xl tracking-tight text-white font-sans leading-none">
+                Vayu<span className="text-emerald-400">Coach</span>
+              </span>
+              <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider rounded-md bg-emerald-950/70 text-emerald-300 border border-emerald-800">
+                CPCB NAQI
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400 leading-tight whitespace-nowrap mt-1 hidden sm:block">
+              Understand Your Air. Make Better Decisions.
+            </p>
+          </div>
+        </div>
+
+        {/* Center Navigation Links (Visible on >= 1150px, single clean row, zero clipping) */}
+        <nav className="hidden min-[1150px]:flex items-center gap-1 xl:gap-1.5 overflow-x-auto no-scrollbar">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item.id)}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs xl:text-sm font-medium whitespace-nowrap shrink-0 transition-all duration-150 cursor-pointer ${
+                  isActive
+                    ? 'bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 text-white font-semibold shadow-md shadow-emerald-700/30 ring-1 ring-emerald-400/40'
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+                }`}
+              >
+                <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                <span className="whitespace-nowrap shrink-0">{item.label}</span>
+                {isActive && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-200 animate-pulse shrink-0" />
+                )}
+                {item.badge && (
+                  <span className={`text-[8px] sm:text-[9px] px-1.5 py-0.2 rounded font-mono font-bold uppercase whitespace-nowrap shrink-0 ${
+                    isActive
+                      ? 'bg-white/20 text-white border border-white/30 backdrop-blur-xs'
+                      : item.id === 'admin'
+                        ? 'bg-indigo-950 text-indigo-300 border border-indigo-800/60'
+                        : 'bg-emerald-950/80 text-emerald-300 border border-emerald-800/60'
+                  }`}>
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Right Auth / Profile Action & Quick Controls (shrink-0, pinned to right) */}
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+
+          {/* Location Pill */}
+          <button
+            onClick={onOpenCityModal}
+            title={`Switch monitoring station (Current: ${currentLocation.name})`}
+            className="flex items-center gap-1 sm:gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-900/90 border border-slate-700 hover:border-emerald-500 text-xs text-slate-200 shadow-2xs hover:bg-slate-800 transition-all cursor-pointer whitespace-nowrap shrink-0"
           >
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-800 via-emerald-700 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-700/25 group-hover:scale-105 transition-transform shrink-0">
-              <Wind className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 dark:text-white font-sans">
-                  Vayu<span className="text-emerald-700 dark:text-emerald-400">Coach</span>
-                </span>
-                <span className="px-1.5 py-0.5 text-[8px] sm:text-[9px] font-mono font-bold uppercase tracking-wider rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 dark:bg-emerald-950/70 dark:text-emerald-300 dark:border-emerald-800">
-                  CPCB NAQI
-                </span>
-              </div>
-              <p className="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden md:block">
-                Understand Your Air. Make Better Decisions.
-              </p>
-            </div>
+            <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <span className="font-semibold text-xs max-w-[80px] sm:max-w-[110px] truncate">
+              {cityName}
+            </span>
+          </button>
+
+          {/* Live NAQI Badge */}
+          <div
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg border shadow-2xs font-mono select-none whitespace-nowrap shrink-0"
+            style={{
+              backgroundColor: `${badgeColor}18`,
+              borderColor: `${badgeColor}40`,
+              color: badgeColor
+            }}
+            title={`Current Indian NAQI: ${naqiVal} (${naqiCat})`}
+          >
+            <span className="w-2 h-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: badgeColor }} />
+            <span className="font-bold text-xs">
+              {naqiVal}
+            </span>
+            <span className="text-[11px] font-semibold hidden md:inline opacity-95">
+              {naqiCat}
+            </span>
           </div>
 
-          {/* Center: Desktop Navigation Tabs (Vibrant & Distinct Active States) */}
-          <nav className="hidden lg:flex items-center gap-1 bg-slate-100/90 dark:bg-slate-800/90 p-1.5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-inner">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
-                    isActive
-                      ? 'bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-700/30 ring-1 ring-emerald-400/40 scale-[1.02]'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-700/70'
-                  }`}
-                >
-                  <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-400 dark:text-slate-400'}`} />
-                  <span>{item.label}</span>
-                  {isActive && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-200 animate-pulse shrink-0" />
-                  )}
-                  {item.badge && (
-                    <span className={`text-[8px] sm:text-[9px] px-1.5 py-0.2 rounded-md font-mono uppercase font-bold tracking-tight ${
-                      isActive
-                        ? 'bg-white/20 text-white border border-white/30 backdrop-blur-xs'
-                        : item.id === 'admin'
-                          ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950/80 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/40'
-                          : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40'
-                    }`}>
-                      {item.badge}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </nav>
+          {/* Refresh Feed */}
+          <button
+            onClick={onRefresh}
+            disabled={isLoading}
+            title="Refresh environmental telemetry"
+            className="p-1.5 sm:p-2 rounded-lg bg-slate-900/90 border border-slate-700 text-slate-300 hover:text-emerald-400 hover:border-emerald-400/50 transition-colors disabled:opacity-50 cursor-pointer shrink-0"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-emerald-400' : ''}`} />
+          </button>
 
-          {/* Right Controls: Location, Telemetry, Preferences, User Auth */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          {/* Email Notification Preferences Trigger */}
+          <button
+            onClick={currentUser ? onOpenPreferences : onOpenAuth}
+            title="Email Notification Preferences"
+            className="p-1.5 sm:p-2 rounded-lg bg-slate-900/90 border border-slate-700 text-slate-300 hover:text-emerald-400 hover:border-emerald-400/50 transition-colors relative cursor-pointer shrink-0"
+          >
+            <Bell className="w-3.5 h-3.5" />
+            <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-[#0B1320]" />
+          </button>
 
-            {/* Location Pill */}
-            <button
-              onClick={onOpenCityModal}
-              title={`Switch city (Current: ${currentLocation.name})`}
-              className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 text-xs text-slate-700 dark:text-slate-200 shadow-2xs hover:bg-emerald-50/50 dark:hover:bg-slate-700/80 transition-all cursor-pointer"
-            >
-              <MapPin className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400 shrink-0" />
-              <span className="font-semibold text-xs max-w-[80px] sm:max-w-[120px] truncate">
-                {cityName}
-              </span>
-            </button>
-
-            {/* Live CPCB NAQI Badge (Visible on all screens, compact on mobile) */}
-            <div
-              className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl border shadow-2xs font-mono select-none"
-              style={{
-                backgroundColor: `${badgeColor}15`,
-                borderColor: `${badgeColor}40`,
-                color: badgeColor
-              }}
-              title={`Current Indian NAQI: ${naqiVal} (${naqiCat})`}
-            >
-              <span className="w-2 h-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: badgeColor }} />
-              <span className="font-bold text-xs">
-                {naqiVal}
-              </span>
-              <span className="text-[11px] font-semibold hidden sm:inline opacity-95">
-                {naqiCat}
-              </span>
-            </div>
-
-            {/* Refresh Feed */}
-            <button
-              onClick={onRefresh}
-              disabled={isLoading}
-              title="Refresh environmental telemetry"
-              className="p-1.5 sm:p-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-emerald-700 hover:border-emerald-300 transition-colors disabled:opacity-50 cursor-pointer"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-emerald-600' : ''}`} />
-            </button>
-
-            {/* Email Notification Preferences Trigger */}
-            <button
-              onClick={currentUser ? onOpenPreferences : onOpenAuth}
-              title="Email Notification Preferences"
-              className="p-1.5 sm:p-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-emerald-700 hover:border-emerald-300 transition-colors relative cursor-pointer"
-            >
-              <Bell className="w-3.5 h-3.5" />
-              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900" />
-            </button>
-
-            {/* Auth Pill / User Profile */}
+          {/* Pinned Auth Button / Logged-in User Profile Pill (shrink-0) */}
+          <div className="shrink-0">
             {currentUser ? (
-              <div className="flex items-center gap-1 bg-slate-50 dark:bg-slate-800 pl-2 pr-1 py-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
-                <span className="font-semibold text-slate-800 dark:text-slate-200 max-w-[70px] sm:max-w-[100px] truncate text-[11px] sm:text-xs">
+              <div className="flex items-center gap-1.5 bg-slate-900/90 pl-2.5 pr-1 py-1 rounded-lg border border-slate-700 text-xs shrink-0">
+                <span className="font-semibold text-slate-200 max-w-[80px] sm:max-w-[110px] truncate text-xs">
                   {currentUser.name.split(' ')[0]}
                 </span>
                 {currentUser.role === 'admin' ? (
-                  <span className="px-1 py-0.2 rounded text-[8px] font-mono font-bold uppercase bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                  <span className="px-1.5 py-0.2 rounded text-[8px] font-mono font-bold uppercase bg-indigo-950 text-indigo-300 border border-indigo-800">
                     Admin
                   </span>
                 ) : (
-                  <span className="px-1 py-0.2 rounded text-[8px] font-mono font-bold uppercase bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                    User
+                  <span className="px-1.5 py-0.2 rounded text-[8px] font-mono font-bold uppercase bg-emerald-950 text-emerald-300 border border-emerald-800">
+                    Citizen
                   </span>
                 )}
                 <button
                   onClick={onLogout}
                   title="Sign Out"
-                  className="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-white dark:hover:bg-slate-700 transition cursor-pointer"
+                  className="p-1 rounded text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition cursor-pointer"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                 </button>
@@ -224,50 +230,52 @@ export const Navbar: React.FC<NavbarProps> = ({
             ) : (
               <button
                 onClick={onOpenAuth}
-                className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-emerald-600/30 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-semibold text-xs transition cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-500/40 bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-300 font-semibold text-xs transition cursor-pointer shrink-0 whitespace-nowrap shadow-xs"
               >
                 <UserIcon className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Sign In</span>
+                <span>Sign In</span>
               </button>
             )}
-
-            {/* Quick Decisions Shortcut (Desktop Only) */}
-            <button
-              onClick={() => setActiveTab('decisions')}
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-medium text-xs shadow-xs transition-colors shrink-0 cursor-pointer"
-            >
-              <Compass className="w-3.5 h-3.5" />
-              <span>Decisions</span>
-            </button>
           </div>
-        </div>
 
-        {/* Mobile Navigation Strip (Zero Scrollbar, Touch-Friendly, Vibrant Active States) */}
-        <div className="lg:hidden relative">
-          <div className="flex items-center gap-1.5 overflow-x-auto py-2 px-0.5 no-scrollbar snap-x snap-mandatory scroll-smooth border-t border-slate-200/70 dark:border-slate-800">
+          {/* Mobile / Tablet Hamburger Toggle (< 1150px) */}
+          <button
+            onClick={() => setMobileDrawerOpen((prev) => !prev)}
+            aria-label="Toggle Navigation Menu"
+            className="min-[1150px]:hidden p-1.5 sm:p-2 rounded-lg bg-slate-900/90 border border-slate-700 text-slate-300 hover:text-white hover:border-slate-600 transition cursor-pointer shrink-0"
+          >
+            {mobileDrawerOpen ? <X className="w-4 h-4 text-emerald-400" /> : <Menu className="w-4 h-4" />}
+          </button>
+
+        </div>
+      </div>
+
+      {/* Responsive Collapsible Drawer (< 1150px) */}
+      {mobileDrawerOpen && (
+        <div className="min-[1150px]:hidden bg-[#0F172A] border-t border-slate-800 px-4 py-4 animate-fadeIn shadow-2xl">
+          <div className="flex flex-col gap-1.5 max-w-md mx-auto">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
               return (
                 <button
                   key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs whitespace-nowrap transition-all duration-200 snap-start shrink-0 cursor-pointer ${
+                  onClick={() => handleNavClick(item.id)}
+                  className={`flex items-center justify-between w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer ${
                     isActive
-                      ? 'bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 text-white font-bold shadow-md shadow-emerald-700/30 ring-1 ring-emerald-400/40 scale-[1.02]'
-                      : 'bg-slate-100/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60 hover:bg-slate-200 dark:hover:bg-slate-700'
+                      ? 'bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-700/30'
+                      : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-500 dark:text-slate-400'}`} />
-                  <span>{item.label}</span>
-                  {isActive && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-200 animate-pulse shrink-0" />
-                  )}
+                  <div className="flex items-center gap-2.5">
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                    <span>{item.label}</span>
+                  </div>
                   {item.badge && (
-                    <span className={`text-[8px] px-1 py-0.2 rounded font-mono uppercase font-bold ${
+                    <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono uppercase font-bold ${
                       isActive
                         ? 'bg-white/20 text-white border border-white/30'
-                        : 'bg-emerald-200/70 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-300'
+                        : 'bg-emerald-950 text-emerald-300 border border-emerald-800/60'
                     }`}>
                       {item.badge}
                     </span>
@@ -277,8 +285,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </div>
         </div>
-
-      </div>
+      )}
     </header>
   );
 };
