@@ -77,10 +77,10 @@ export const Assistant: React.FC<AssistantProps> = ({
 
   const quickPrompts = [
     'Should I exercise outdoors right now or postpone?',
-    'Should I open or close my home windows in Mangaluru today?',
+    'Should I open or close my home windows today?',
     'How does deep frying (tadka) affect my indoor PM2.5?',
     'Explain the difference between Indian NAQI and US AQI.',
-    'Why is the afternoon sea breeze cleaner than morning air?'
+    'Why is the afternoon breeze cleaner than morning air?'
   ];
 
   const handleSend = async (textToSend?: string) => {

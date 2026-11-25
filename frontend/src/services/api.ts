@@ -121,8 +121,8 @@ export async function fetchDecisions(readings: EnvironmentalReadings, location: 
     readings,
     overall_status: isGood ? 'Favorable Atmospheric Conditions' : 'Moderate Particulate Density',
     main_advice: isGood
-      ? 'Air quality is clean across Mangaluru. Favorable for morning and afternoon outdoor training.'
-      : 'Moderate air pollution. Consider afternoon sea-breeze window (1:00 – 4:00 PM) for cardio.',
+      ? `Air quality is clean across ${location.name.split(',')[0]}. Favorable for outdoor training and ventilation.`
+      : `Moderate air pollution in ${location.name.split(',')[0]}. Consider afternoon dispersion window (1:00 – 4:00 PM) for cardio.`,
     decisions: [
       {
         activity_type: 'exercise',

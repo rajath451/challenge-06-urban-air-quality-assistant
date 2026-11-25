@@ -313,7 +313,7 @@ export const Landing: React.FC<LandingProps> = ({
             <Wind className="w-4 h-4 text-emerald-700" />
             <span className="font-bold text-slate-800 font-sans">VayuCoach Environmental Intelligence</span>
             <span>•</span>
-            <span>Focus: Mangaluru, Karnataka, India</span>
+            <span>Pan-India Coverage • Live Station: {currentLocation.name.split(',')[0]}</span>
           </div>
           <div className="flex items-center gap-4 font-mono text-[11px]">
             <button onClick={() => onNavigate('transparency')} className="hover:underline text-emerald-700">

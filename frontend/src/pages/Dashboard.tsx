@@ -185,12 +185,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <span>Primary Recommendation</span>
               </div>
               <h4 className="font-bold text-slate-900 text-sm sm:text-base leading-snug">
-                {indian_naqi <= 50 ? 'Safe for All Outdoor Activities & Running' : 'Moderate Quality – Prefer Midday Sea Breeze Window'}
+                {indian_naqi <= 50
+                  ? 'Safe for All Outdoor Activities & Running'
+                  : currentLocation.is_coastal
+                    ? 'Moderate Quality – Prefer Midday Sea Breeze Window'
+                    : 'Moderate Quality – Prefer Afternoon Dispersion Window'}
               </h4>
               <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
                 {indian_naqi <= 50
                   ? `PM2.5 is pristine at ${pm2_5} µg/m³. Full natural ventilation and intense outdoor cardio are favorable.`
-                  : `PM2.5 is ${pm2_5} µg/m³. Reschedule heavy aerobic runs to 1:00 – 4:00 PM when Arabian Sea onshore winds disperse surface dust.`}
+                  : `PM2.5 is ${pm2_5} µg/m³. Reschedule heavy aerobic runs to 1:00 – 4:00 PM when active atmospheric boundary layer mixing and wind dispersion minimize surface particulate density.`}
               </p>
             </div>
 
@@ -244,9 +248,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <Compass className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div className="min-w-0">
-            <span className="text-[10px] sm:text-[11px] font-mono text-slate-400 block truncate">Coastal Vector</span>
+            <span className="text-[10px] sm:text-[11px] font-mono text-slate-400 block truncate">Wind Vector</span>
             <span className="text-xs sm:text-sm font-bold text-emerald-800 font-mono truncate block">
-              {wind_direction >= 200 && wind_direction <= 300 ? 'Onshore Sea' : 'Inland'}
+              {currentLocation.is_coastal
+                ? (wind_direction >= 200 && wind_direction <= 300 ? 'Onshore Sea' : 'Inland Breeze')
+                : (wind_speed >= 8 ? 'Active Dispersion' : 'Calm / Light')}
             </span>
           </div>
         </div>
@@ -259,10 +265,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div>
             <h3 className="text-sm sm:text-base font-bold text-slate-900 font-sans flex items-center gap-2">
               <Clock className="w-4 h-4 text-emerald-700 shrink-0" />
-              <span>Coastal Diurnal Particulate Trajectory (24-Hour Model)</span>
+              <span>Diurnal Particulate Trajectory (24-Hour Model)</span>
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              Modeled boundary layer expansion in coastal Karnataka shows particulate dips during afternoon sea breezes.
+              Modeled boundary layer expansion and thermal convection show localized particulate dips during afternoon dispersion windows.
             </p>
           </div>
           <span className="text-[10px] font-mono text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200 self-start sm:self-auto shrink-0 font-semibold">

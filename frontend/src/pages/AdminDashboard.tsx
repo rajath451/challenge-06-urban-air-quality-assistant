@@ -57,7 +57,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentUser, onO
   const [advisoryTitle, setAdvisoryTitle] = useState('');
   const [advisoryMessage, setAdvisoryMessage] = useState('');
   const [advisorySeverity, setAdvisorySeverity] = useState<'INFO' | 'WARNING' | 'EMERGENCY'>('WARNING');
-  const [targetRegion, setTargetRegion] = useState('Mangaluru Metro Area');
+  const [targetRegion, setTargetRegion] = useState('All Connected Metropolitan Regions');
   const [broadcasting, setBroadcasting] = useState(false);
 
   // SMTP Test Email form state
@@ -583,7 +583,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentUser, onO
               </h3>
             </div>
             <p className="text-xs text-slate-600 dark:text-slate-400 mb-4">
-              Dispatch official meteorological air advisories to citizens across Mangaluru and connected districts.
+              Dispatch official meteorological air advisories to citizens across connected urban regions and districts.
             </p>
 
             <form onSubmit={handleBroadcastAlert} className="space-y-3.5">
@@ -596,10 +596,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentUser, onO
                   onChange={(e) => setTargetRegion(e.target.value)}
                   className="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
-                  <option value="Mangaluru Metro Area">Mangaluru Metropolitan (Kadri / Baikampady / Bunder)</option>
-                  <option value="Udupi & Manipal District">Udupi & Manipal District</option>
-                  <option value="Bengaluru Urban">Bengaluru Urban (State Central)</option>
-                  <option value="Coastal Karnataka Belt">Statewide Coastal Belt</option>
+                  <option value="All Connected Regions">All Connected Metropolitan Regions (Pan-India)</option>
+                  <option value="Delhi NCR">Delhi NCR Regional Network</option>
+                  <option value="Bengaluru Urban">Bengaluru Urban CAAQMS</option>
+                  <option value="Mumbai Metropolitan">Mumbai Metropolitan Coastal Grid</option>
+                  <option value="Hyderabad Metro">Hyderabad Regional Grid</option>
+                  <option value="Chennai Metro">Chennai Coastal Grid</option>
+                  <option value="Mangaluru Metro Area">Mangaluru Metropolitan Grid</option>
                 </select>
               </div>
 

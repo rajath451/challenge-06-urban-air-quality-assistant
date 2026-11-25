@@ -47,19 +47,19 @@ export const CityModal: React.FC<CityModalProps> = ({
       (pos) => {
         setIsLocating(false);
         onSelectCity({
-          name: 'Mangaluru Regional Area (Detected via GPS)',
+          name: 'Current Detected Location (via GPS)',
           latitude: pos.coords.latitude,
           longitude: pos.coords.longitude,
-          state: 'Karnataka',
+          state: 'Detected State',
           country: 'India',
-          station_name: 'Kadri / Baikampady CPCB Local Grid',
-          is_coastal: true
+          station_name: 'Local CAAQMS Grid Station',
+          is_coastal: false
         });
         onClose();
       },
       (err) => {
         setIsLocating(false);
-        alert(`Location detection failed: ${err.message}. Using default Mangaluru.`);
+        alert(`Location detection failed: ${err.message}. Using current station.`);
       },
       { timeout: 8000 }
     );
@@ -78,7 +78,7 @@ export const CityModal: React.FC<CityModalProps> = ({
                 Select Environmental Monitoring Station
               </h3>
               <p className="text-[11px] text-slate-500">
-                Primary station: Mangaluru, Karnataka (expandable to major Indian cities).
+                Pan-India live telemetry calibrated against national CPCB and State CAAQMS stations.
               </p>
             </div>
           </div>
@@ -98,7 +98,7 @@ export const CityModal: React.FC<CityModalProps> = ({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search Indian city or district (e.g. Mangaluru, Udupi, Bengaluru, Delhi)..."
+              placeholder="Search any Indian city, district, or region (e.g. Bengaluru, Delhi, Mumbai, Hyderabad)..."
               className="w-full pl-10 pr-24 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-xs sm:text-sm text-slate-800 placeholder-slate-400 outline-hidden transition-all"
             />
             <button
@@ -168,7 +168,6 @@ export const CityModal: React.FC<CityModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {FEATURED_CITIES.map((loc, idx) => {
                 const isSelected = currentLocation.name === loc.name;
-                const isMangaluru = loc.name.toLowerCase().includes('mangaluru');
 
                 return (
                   <button
@@ -188,9 +187,9 @@ export const CityModal: React.FC<CityModalProps> = ({
                         <span className="text-xs font-bold text-slate-900 font-sans">
                           {loc.name.split(',')[0]}
                         </span>
-                        {isMangaluru && (
+                        {isSelected && (
                           <span className="text-[9px] font-mono px-1.5 py-0.2 bg-emerald-100 text-emerald-800 rounded font-semibold">
-                            Primary Focus
+                            Active Station
                           </span>
                         )}
                       </div>

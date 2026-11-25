@@ -75,7 +75,7 @@ export const Planner: React.FC<PlannerProps> = ({
           Best Time Activity Planner
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-3xl">
-          Don't exercise blindly. In coastal Mangaluru, diurnal land/sea breezes create sharp particulate variance across 24 hours. Select your planned duration to identify the cleanest atmospheric window.
+          Don't exercise blindly. Diurnal atmospheric dynamics, boundary layer mixing, and wind shifts create sharp particulate variance across 24 hours in urban regions. Select your planned duration to identify the cleanest atmospheric window for your location.
         </p>
       </div>
 

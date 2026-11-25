@@ -18,6 +18,9 @@ def generate_decisions(readings: EnvironmentalReadings, location: LocationInfo) 
     humidity = readings.relative_humidity
     wind_spd = readings.wind_speed
 
+    city = location.name.split(',')[0].strip() if location and location.name else "your region"
+    is_coastal = getattr(location, 'is_coastal', False)
+
     # Get uncertainty profile
     unc = evaluate_uncertainty(readings.data_freshness_minutes, distance_km=4.2, has_live_station=True)
 
@@ -26,6 +29,8 @@ def generate_decisions(readings: EnvironmentalReadings, location: LocationInfo) 
     # -------------------------------------------------------------
     # Deep alveolar minute ventilation increases 4x to 6x during aerobic cardio.
     # CPCB threshold: >60 µg/m³ (Moderate/Poor) warrants reduction of prolonged cardio.
+    disp_desc = f"sea breeze dispersion in coastal {city}" if is_coastal else f"afternoon atmospheric mixing in {city}"
+
     if pm25 <= 30.0:
         rec_title = "Optimal for Outdoor Training"
         rec_status = "Recommended"
@@ -39,9 +44,9 @@ def generate_decisions(readings: EnvironmentalReadings, location: LocationInfo) 
         rec_status = "Proceed with Caution"
         tier = "caution"
         reason = f"PM2.5 is {pm25:.1f} µg/m³ (CPCB NAQI: {naqi} - Satisfactory). Healthy individuals can exercise; sensitive individuals or asthmatics should observe lung comfort."
-        rationale = "Satisfactory under Indian NAQI. However, elevated humidity in coastal areas may trap mild road exhaust."
+        rationale = "Satisfactory under Indian NAQI standards."
         alt = "Moderate workout pace; consider trail parks away from main highways."
-        best_win = "1:00 PM – 4:00 PM (Stronger sea breeze dispersion in coastal Mangaluru)"
+        best_win = f"1:00 PM – 4:00 PM (Stronger {disp_desc})"
     elif pm25 <= 90.0:
         rec_title = "Elevated Particulates – Modify Intensity"
         rec_status = "Modify Intensity/Time"
@@ -49,7 +54,7 @@ def generate_decisions(readings: EnvironmentalReadings, location: LocationInfo) 
         reason = f"PM2.5 is {pm25:.1f} µg/m³ (CPCB NAQI: {naqi} - Moderate). At aerobic exertion (ventilation ~2.5 m³/h), you will inhale significant fine particulate mass."
         rationale = "Exceeds CPCB Satisfactory limit. Can cause respiratory irritation and throat tightness in runners."
         alt = "Switch high-intensity running to indoor treadmill or bodyweight strength training."
-        best_win = "Postpone to afternoon sea breeze window when wind speed exceeds 10 km/h."
+        best_win = f"Postpone to afternoon window when active wind dispersion exceeds 10 km/h in {city}."
     else:
         rec_title = "Unfavorable Air Quality – Postpone Outdoor Cardio"
         rec_status = "Avoid / Postpone"

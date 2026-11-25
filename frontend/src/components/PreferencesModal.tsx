@@ -309,10 +309,12 @@ export const PreferencesModal: React.FC<PreferencesModalProps> = ({
                     disabled={!enabled}
                     className="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200"
                   >
+                    <option value="Bengaluru, Karnataka, India">Bengaluru Urban (BTM Layout CAAQMS)</option>
+                    <option value="New Delhi, India">New Delhi (National Capital Region)</option>
+                    <option value="Mumbai, Maharashtra, India">Mumbai (Colaba Coastal Monitor)</option>
+                    <option value="Chennai, Tamil Nadu, India">Chennai (Alandur CPCB)</option>
+                    <option value="Hyderabad, Telangana, India">Hyderabad (Sanathnagar CAAQMS)</option>
                     <option value="Mangaluru, Karnataka, India">Mangaluru, Karnataka (Kadri Station)</option>
-                    <option value="Udupi-Manipal, Karnataka, India">Udupi & Manipal District</option>
-                    <option value="Bengaluru, Karnataka, India">Bengaluru Urban (State Central)</option>
-                    <option value="New Delhi, Delhi, India">New Delhi (National Capital Region)</option>
                   </select>
                 </div>
               </div>

@@ -74,7 +74,7 @@ export const DataTransparency: React.FC = () => {
               Outdoor PM2.5, PM10 & Weather
             </h4>
             <p className="text-xs text-slate-600 leading-relaxed">
-              Real physical atmospheric measurements calibrated against Continuous Ambient Air Quality Monitoring Stations (CPCB/KSPCB grid in Mangaluru Kadri/Baikampady).
+              Real physical atmospheric measurements calibrated against Continuous Ambient Air Quality Monitoring Stations (CPCB and State Pollution Control Boards CAAQMS national grid).
             </p>
           </div>
 

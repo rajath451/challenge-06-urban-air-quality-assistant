@@ -32,7 +32,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenAuth, isAdmin 
             </p>
             <div className="flex items-center gap-2 text-xs text-slate-400">
               <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              <span>Initial Station Focus: Mangaluru, Karnataka</span>
+              <span>Pan-India CAAQMS Station Coverage & Urban Telemetry</span>
             </div>
           </div>
 
@@ -171,7 +171,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenAuth, isAdmin 
               © {new Date().getFullYear()} VayuCoach • Challenge 06
             </p>
             <p className="text-slate-400 text-[10px]">
-              Built for Mangaluru & Indian Urban Environments
+              Built for Indian & Global Urban Environments
             </p>
           </div>
         </div>

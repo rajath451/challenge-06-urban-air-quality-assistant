@@ -78,7 +78,7 @@ def generate_fallback_chat_response(
             + ("Safe for vigorous outdoor cardio and runs." if pm25 <= 30 else
                "Acceptable for moderate jogging. Sensitive individuals or asthmatics should observe lung comfort." if pm25 <= 60 else
                "Modify intensity: switch high-intensity running to indoor training or wait for the afternoon sea breeze.")
-            + f"\n\n• **Physiological Context**: At aerobic running pace, minute ventilation increases to ~2.5 m³/h. In coastal Mangaluru, the cleanest outdoor training window is between **1:00 PM and 4:00 PM** when onshore Arabian Sea winds disperse accumulated road particulates."
+            + f"\n\n• **Physiological Context**: At aerobic running pace, minute ventilation increases to ~2.5 m³/h. In {loc_name}, the cleanest outdoor training window is between **1:00 PM and 4:00 PM** when daytime atmospheric boundary layer mixing disperses accumulated road particulates."
         )
     elif "window" in q or "ventilate" in q or "ventilation" in q or "fresh air" in q:
         reply = (
@@ -87,14 +87,14 @@ def generate_fallback_chat_response(
             f"• **Window Status**: "
             + ("**Recommended to open windows** for natural cross-ventilation. Outdoor air is cleaner than typical indoor stale CO2." if pm25 <= 40 else
                "**Timed ventilation permitted**: Open opposite windows for 20 minutes during peak afternoon sea breeze (1:00 – 3:30 PM), then close before evening traffic builds.")
-            + "\n• **Indoor Hack**: In coastal regions, keeping bedroom windows cracked during humid calm nights can trap coastal mold spores; cross-ventilate during dry daytime hours instead."
+            + "\n• **Indoor Hack**: In urban corridors, avoid keeping bedroom windows open during calm, humid night hours; cross-ventilate during active daytime hours instead."
         )
     elif "cook" in q or "indoor" in q or "coil" in q or "incense" in q:
         reply = (
             f"**Virtual Indoor Air Intelligence (HomeBreath Analysis):**\n\n"
             f"Indoor air pollution often exceeds outdoor levels due to unvented combustion:\n"
             f"• **Tadka / Deep Frying**: Emits 3,000–4,500 µg/min of ultrafine oily aerosols, spiking a 200 sq ft room to over 150 µg/m³ PM2.5 within 20 minutes if unvented.\n"
-            f"• **Mosquito Coils**: Common in coastal Karnataka, one burning coil produces particulate emissions equivalent to 75–100 cigarettes over 8 hours.\n"
+            f"• **Mosquito Coils**: Common in Indian urban households, one burning coil produces particulate emissions equivalent to 75–100 cigarettes over 8 hours.\n"
             f"• **Action**: Run kitchen exhaust 2 minutes *before* igniting the stove and keep on for 10 minutes post-cooking. Seal bedroom doors during frying."
         )
     else:
