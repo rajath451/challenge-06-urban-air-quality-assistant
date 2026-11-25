@@ -9,6 +9,7 @@ import { Exposure } from './pages/Exposure';
 import { Assistant } from './pages/Assistant';
 import { DataTransparency } from './pages/DataTransparency';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { AuthPage } from './pages/AuthPage';
 import { CityModal } from './components/CityModal';
 import { AuthModal } from './components/AuthModal';
 import { PreferencesModal } from './components/PreferencesModal';
@@ -28,6 +29,12 @@ export const App: React.FC = () => {
   const [authModalTab, setAuthModalTab] = useState<'login' | 'register' | 'forgot_password' | 'verify_email'>('login');
   const [authInitialToken, setAuthInitialToken] = useState('');
   const [currentUser, setCurrentUser] = useState<User | null>(getStoredUser());
+  const [showAuthPage, setShowAuthPage] = useState<boolean>(() => {
+    // Show Auth Page first if user is not logged in and hasn't chosen guest mode in this session
+    const stored = getStoredUser();
+    const guest = sessionStorage.getItem('vayucoach_guest_mode');
+    return !stored && !guest;
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   // Sync / refresh session with backend profile on mount
@@ -64,6 +71,8 @@ export const App: React.FC = () => {
   const handleLogout = () => {
     clearAuthSession();
     setCurrentUser(null);
+    sessionStorage.removeItem('vayucoach_guest_mode');
+    setShowAuthPage(true);
     if (activeTab === 'admin') {
       setActiveTab('landing');
     }
@@ -91,6 +100,24 @@ export const App: React.FC = () => {
     loadEnvironmentalData(loc);
   };
 
+  if (showAuthPage) {
+    return (
+      <AuthPage
+        onSuccess={(user) => {
+          setCurrentUser(user);
+          setShowAuthPage(false);
+          if (user.role === 'admin') {
+            setActiveTab('admin');
+          }
+        }}
+        onContinueAsGuest={() => {
+          sessionStorage.setItem('vayucoach_guest_mode', 'true');
+          setShowAuthPage(false);
+        }}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-emerald-600 selection:text-white">
       
@@ -104,11 +131,7 @@ export const App: React.FC = () => {
         onRefresh={() => loadEnvironmentalData(currentLocation)}
         isLoading={isLoading}
         currentUser={currentUser}
-        onOpenAuth={() => {
-          setAuthModalTab('login');
-          setAuthInitialToken('');
-          setIsAuthModalOpen(true);
-        }}
+        onOpenAuth={() => setShowAuthPage(true)}
         onLogout={handleLogout}
         onOpenPreferences={() => setIsPreferencesModalOpen(true)}
       />
@@ -216,11 +239,7 @@ export const App: React.FC = () => {
       {/* Universal Responsive Footer */}
       <Footer
         onNavigate={setActiveTab}
-        onOpenAuth={() => {
-          setAuthModalTab('login');
-          setAuthInitialToken('');
-          setIsAuthModalOpen(true);
-        }}
+        onOpenAuth={() => setShowAuthPage(true)}
         isAdmin={currentUser?.role === 'admin'}
       />
 

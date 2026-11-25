@@ -15,6 +15,11 @@ class Settings:
     # AI Reasoning
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
 
+    # Database & Authentication: Supabase
+    SUPABASE_URL: str = os.getenv("SUPABASE_URL", "https://vayucoach-urban-air.supabase.co")
+    SUPABASE_ANON_KEY: str = os.getenv("SUPABASE_ANON_KEY", "")
+    SUPABASE_SERVICE_ROLE_KEY: str = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
+
     # Security
     JWT_SECRET_KEY: str = os.getenv(
         "JWT_SECRET_KEY", 

@@ -11,12 +11,13 @@ import {
   KeyRound
 } from 'lucide-react';
 import { loginUser, registerUser, saveAuthSession } from '../services/auth';
+import { signInWithSupabase, signUpWithSupabase } from '../services/supabase';
 import {
   requestPasswordReset,
   submitPasswordReset,
   verifyEmailToken
 } from '../services/notifications';
-import { User } from '../types/auth';
+import { User, DEFAULT_SENSITIVITY_PROFILE } from '../types/auth';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -53,6 +54,28 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     try {
       if (tab === 'login') {
+        // Try Supabase auth first
+        const supaRes = await signInWithSupabase(email, password);
+        if (supaRes.success && supaRes.user) {
+          const userObj: User = {
+            id: supaRes.user.id,
+            email: supaRes.user.email,
+            name: supaRes.user.name,
+            role: supaRes.user.role,
+            is_verified: true,
+            created_at: new Date().toISOString(),
+            sensitivity_profile: DEFAULT_SENSITIVITY_PROFILE
+          };
+          saveAuthSession('sb_session_' + supaRes.user.id, userObj);
+          setSuccessMsg(`Welcome back, ${userObj.name}!`);
+          setTimeout(() => {
+            onSuccess(userObj);
+            onClose();
+          }, 500);
+          return;
+        }
+
+        // Fallback to Backend login
         const res = await loginUser(email, password);
         saveAuthSession(res.access_token, res.user);
         setSuccessMsg(`Welcome back, ${res.user.name}!`);
@@ -61,6 +84,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           onClose();
         }, 500);
       } else if (tab === 'register') {
+        const supaRes = await signUpWithSupabase(email, password, name);
+        if (supaRes.success && supaRes.user) {
+          const userObj: User = {
+            id: supaRes.user.id,
+            email: supaRes.user.email,
+            name: supaRes.user.name,
+            role: 'user',
+            is_verified: !supaRes.isConfirmationPending,
+            created_at: new Date().toISOString(),
+            sensitivity_profile: DEFAULT_SENSITIVITY_PROFILE
+          };
+          saveAuthSession('sb_session_' + supaRes.user.id, userObj);
+          setSuccessMsg(`Account created! Supabase session initialized.`);
+          setTimeout(() => {
+            onSuccess(userObj);
+            onClose();
+          }, 700);
+          return;
+        }
+
         const res = await registerUser(name, email, password);
         saveAuthSession(res.access_token, res.user);
         setSuccessMsg(`Account created! A welcome & verification email has been dispatched.`);
@@ -126,12 +169,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <Shield className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-white tracking-tight">
-              {tab === 'login' && 'Sign In to VayuCoach'}
-              {tab === 'register' && 'Create Citizen Account'}
-              {tab === 'forgot_password' && 'Password Recovery'}
-              {tab === 'verify_email' && 'Verify Email Address'}
-            </h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-xl font-bold text-white tracking-tight">
+                {tab === 'login' && 'Sign In to VayuCoach'}
+                {tab === 'register' && 'Create Citizen Account'}
+                {tab === 'forgot_password' && 'Password Recovery'}
+                {tab === 'verify_email' && 'Verify Email Address'}
+              </h3>
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-blue-500/20 border border-blue-500/30 text-blue-300">
+                Supabase
+              </span>
+            </div>
             <p className="text-xs text-slate-400 mt-0.5 leading-snug">
               Access personalized sensitivity, notifications & station governance
             </p>

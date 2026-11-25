@@ -13,8 +13,18 @@ export interface User {
   email: string;
   role: 'user' | 'admin' | string;
   created_at?: string;
+  is_verified?: boolean;
   sensitivity_profile: UserSensitivityProfile;
 }
+
+export const DEFAULT_SENSITIVITY_PROFILE: UserSensitivityProfile = {
+  has_asthma: false,
+  has_elderly_in_home: false,
+  has_infants: false,
+  commute_mode: 'public',
+  daily_outdoor_exercise_mins: 30,
+  preferred_city: 'Mangaluru'
+};
 
 export interface AuthResponse {
   access_token: string;
