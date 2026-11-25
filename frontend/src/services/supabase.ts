@@ -37,6 +37,9 @@ export async function signUpWithSupabase(
   password: string,
   name: string
 ): Promise<SupabaseAuthResult> {
+  if (!isSupabaseConfigured) {
+    return { success: false, error: 'Supabase unconfigured' };
+  }
   try {
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -80,6 +83,9 @@ export async function signInWithSupabase(
   email: string,
   password: string
 ): Promise<SupabaseAuthResult> {
+  if (!isSupabaseConfigured) {
+    return { success: false, error: 'Supabase unconfigured' };
+  }
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
