@@ -119,7 +119,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
         setTimeout(() => onSuccess(res.user), 600);
       }
     } catch (err: any) {
-      setError(err.message || 'Authentication failed. Please verify credentials.');
+      const msg = err.message || '';
+      if (msg.toLowerCase().includes('not found') || msg.toLowerCase().includes('failed to fetch')) {
+        setError('Invalid email or password. Please verify your credentials.');
+      } else {
+        setError(msg || 'Authentication failed. Please verify credentials.');
+      }
     } finally {
       setLoading(false);
     }

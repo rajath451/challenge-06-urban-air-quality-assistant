@@ -1,6 +1,7 @@
 import { getStoredToken } from './auth';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000';
+const RAW_API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000';
+const API_BASE = RAW_API_BASE.replace(/\/+$/, '').replace(/\/api$/, '');
 
 export interface NotificationPreferences {
   user_id: string;
