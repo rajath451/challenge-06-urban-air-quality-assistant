@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: vayucoach_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - ENVIRONMENT=production
+      - CORS_ORIGINS=["http://localhost:5173", "http://localhost:3000", "*"]
+      - JWT_SECRET_KEY=vayucoach-production-secret-key-32bytes-long-super-safe!
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - SMTP_MOCK_FALLBACK=true
+    env_file:
+      - .env.example
