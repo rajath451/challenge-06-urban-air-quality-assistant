@@ -75,7 +75,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8 animate-fade-in w-full overflow-hidden">
-      
+
       {/* Location Station Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 pb-4 border-b border-slate-200/80">
         <div className="space-y-1">
@@ -112,7 +112,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
       {/* Main CPCB NAQI Hero Card */}
       <div className="rounded-2xl bg-white p-4 sm:p-7 lg:p-8 border border-slate-200/90 shadow-sm relative overflow-hidden">
-        
+
         {/* Soft radial ambient glow */}
         <div
           className="absolute -top-24 -right-24 w-80 h-80 rounded-full blur-3xl opacity-15 pointer-events-none"
@@ -120,7 +120,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         />
 
         <div className="flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 relative z-10">
-          
+
           {/* Numerical Readout */}
           <div className="flex flex-col items-center lg:items-start text-center lg:text-left w-full lg:w-auto">
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-2">
@@ -212,7 +212,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
       {/* Meteorological Array */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
-        
+
         <div className="p-3 sm:p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-center gap-2.5 sm:gap-3">
           <div className="p-2 sm:p-2.5 rounded-lg bg-emerald-100 text-emerald-800 shrink-0">
             <Thermometer className="w-4 h-4 sm:w-5 sm:h-5" />

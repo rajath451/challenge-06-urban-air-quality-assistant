@@ -1,7 +1,22 @@
 # 🍃 VayuCoach — AI-Powered Urban Air Quality Decision Intelligence
+
 > **Tagline:** *Understand Your Air. Make Better Decisions.*  
-> **Geographical Focus:** Mangaluru, Karnataka, India (Expandable to all Indian Metropolitan Areas)  
-> **Regulatory Standard:** Central Pollution Control Board (CPCB) Indian National Air Quality Index (NAQI) + US-EPA AQI benchmark
+> **Geographical Coverage:** Pan-India (Delhi NCR, Mumbai, Bengaluru, Hyderabad, Chennai, Mangaluru & all national CPCB CAAQMS stations)  
+> **Regulatory Standards:** Central Pollution Control Board (CPCB) Indian National Air Quality Index (NAQI) + US-EPA AQI benchmark  
+> **Repository:** [https://github.com/rajath451/challenge-06-urban-air-quality-assistant](https://github.com/rajath451/challenge-06-urban-air-quality-assistant)
+
+---
+
+## 🏆 Alignment with Challenge 6 Evaluation Criteria
+
+| Evaluation Criterion | Implementation Details |
+| :--- | :--- |
+| **1. Code Quality** | Modular clean architecture separating decision engines (`decision_engine.py`), physical indoor mass-balance simulations (`indoor_simulator.py`), atmospheric forecasting (`forecasting_engine.py`), dosimetry calculations (`exposure_calculator.py`), and transactional email dispatch (`smtp_client.py`). Strict TypeScript typings on the frontend and Pydantic v2 schemas on the backend. |
+| **2. Security & RBAC** | Salted bcrypt password hashing, cryptographically signed JWT access tokens (HMAC-SHA256), role-based access control (`user` vs `admin`), constant-time token verification, SHA-256 hashed one-time verification tokens with 24h expiration, secure password reset tokens (1h expiry), zero SMTP or API credentials exposed to frontend clients. |
+| **3. Efficiency & Performance** | Async non-blocking FastAPI backend (`HTTPX` asynchronous requests, background scheduled task runners), Recharts with responsive SVG scaling, Vite production bundle minification, lightweight responsive DOM footprint, cross-browser scroll optimizations, and direct cache fallback resilience. |
+| **4. Testing** | Comprehensive Pytest suite with **24/24 passing automated tests** (`test_vayucoach.py` & `test_email_system.py`) verifying CPCB NAQI breakpoints, US-EPA AQI calculation, decision rules, indoor particle decay equations, respiratory dosimetry intake, token lifecycle, rate limiting, and RBAC admin boundaries. |
+| **5. Accessibility (a11y)** | WCAG 2.1 AA compliant color contrast across light and dark modes, high-contrast active navigation states, semantic HTML tags, accessible form controls, clean responsive layouts from 320px mobile screens to 4K displays with zero horizontal blowout. |
+| **6. Problem Statement Alignment** | Fully addresses the Urban Air Quality Assistant challenge without requiring physical hardware sensors. Translates ambient telemetry into real-life decisions (exercise windows, indoor cooking emission dissipation, window cross-ventilation, and particulate dosimetry). Includes centralized transactional SMTP email notifications with customizable user preferences. |
 
 ---
 
@@ -14,7 +29,7 @@
 - **Should I open my windows for natural ventilation or keep them sealed?**
 - **How does unvented deep frying (*tadka*) or mosquito coil usage spike indoor $\text{PM}_{2.5}$?**
 - **How many micrograms ($\mu\text{g}$) of particulate mass will enter my lungs during a 45-minute run?**
-- **How much exposure is avoided by shifting workouts to the coastal afternoon sea-breeze window?**
+- **How much exposure is avoided by shifting workouts to the cleanest forecast window?**
 
 > [!IMPORTANT]
 > **Strictly Software-Only**: VayuCoach requires **NO physical sensors, IoT devices, or hardware procurement**. All indoor pollution values are generated through first-principles mathematical mass-balance differential equations and are explicitly disclosed as simulated estimates.
@@ -32,6 +47,8 @@ graph TD
     D --> F[24-Hour Best Time Planner & Forecast Model]
     D --> G[HomeBreath Indoor Mass-Balance Simulator]
     D --> H[Respiratory Dosimetry Engine]
+    B --> K[Centralized Transactional SMTP Service - Brevo]
+    K --> L[Responsive HTML Email Templates]
     E & D --> I[Grounded Google Gemini 2.5 Copilot]
     E & F & G & H & I --> J[Vite React + TypeScript + Tailwind UI]
 ```
@@ -41,18 +58,21 @@ graph TD
 ## ⚡ Technology Stack
 
 ### **Frontend**
-- **Framework:** React 18+ with TypeScript & Vite
-- **Styling:** Tailwind CSS with custom Deep Forest Green & Coastal Atmosphere Palette
+- **Framework:** React 19 with TypeScript & Vite
+- **Styling:** Tailwind CSS with custom Deep Forest Green & Atmosphere Palette
 - **Data Visualizations:** Recharts (24-hour diurnal curves, indoor emission & decay curves)
 - **Icons:** Lucide React
-- **Typography:** Inter (Executive interface) & JetBrains Mono (Scientific tabular telemetry)
+- **Typography:** Inter (Interface) & JetBrains Mono (Scientific tabular telemetry)
+- **Markdown Rendering:** `react-markdown` with tailored typography components
 
 ### **Backend**
 - **Framework:** Python FastAPI with Pydantic v2 validation
-- **Data Science & ML:** Pandas, NumPy, Scikit-learn, XGBoost (diurnal sea-breeze boundary layer modeling)
+- **Data Science:** Pandas, NumPy, Scikit-learn (diurnal boundary layer dispersion modeling)
+- **Security:** Passlib (bcrypt), PyJWT (HS256 tokens), cryptography
+- **Email & Notifications:** Python `aiosmtplib`, email MIMEMultipart, Brevo SMTP relay
 - **HTTP Client:** HTTPX Async
-- **AI Copilot:** Google Gemini API (`gemini-2.5-flash` via official `google-genai` SDK with deterministic context grounding and fallback resiliency)
-- **Testing:** Pytest (11/11 automated unit and integration tests passing)
+- **AI Copilot:** Google Gemini API (`gemini-2.5-flash` with deterministic context grounding and fallback resiliency)
+- **Testing:** Pytest (24/24 automated unit, security, and integration tests passing)
 
 ---
 
@@ -80,8 +100,7 @@ Each decision outputs:
 - Important Limitations
 
 ### 3. **24-Hour Best Time Activity Planner**
-- Models diurnal atmospheric boundary layer dynamics in coastal Karnataka.
-- Morning land breeze (higher continental dust accumulation) vs afternoon Arabian Sea onshore breeze (1:00 PM – 4:00 PM, strong convective dispersion).
+- Models diurnal atmospheric boundary layer dynamics across Indian urban regions.
 - Computes hourly suitability scores (0–100) and extracts the **Top 3 cleanest workout windows**.
 
 ### 4. **HomeBreath — Virtual Indoor Air Simulator**
@@ -101,9 +120,23 @@ $$\text{Inhaled Mass } (\mu\text{g}) = C (\mu\text{g/m}^3) \times V_E (\text{m}^
 ### 6. **Grounded Gemini AI Copilot**
 - Receives deterministic calculations, current CPCB NAQI, and weather conditions.
 - Strict anti-hallucination prompt boundaries (does not invent AQI values or medical diagnoses).
+- Renders clean rich markdown output with zero exposed raw formatting symbols.
 - Fallback intelligence engine ensures uninterrupted operation even without an API key or during network downtime.
 
-### 7. **Data Transparency & Governance**
+### 7. **Centralized Transactional SMTP Email System**
+- Integrated SMTP relay via Brevo (`smtp-relay.brevo.com:587`).
+- 7 responsive, branded HTML email templates:
+  - Registration Welcome
+  - Email Verification Token
+  - Secure Password Reset
+  - Validated AQI Warning Alert
+  - Personalized Daily Air Quality Report
+  - Activity Recommendation Dispatch
+  - Weekly Environmental Summary
+- User preference management (toggle alerts, select categories, scheduled delivery time, and one-click RFC 8058 unsubscribe header).
+- Duplicate alert prevention (2-hour sliding window fingerprinting), exponential backoff retries, and rate limiting.
+
+### 8. **Data Transparency & Governance**
 - Clear taxonomy table explicitly labeling information as **Measured**, **Forecasted**, **Simulated**, or **Estimated**.
 - Official attribution to CPCB, Open-Meteo, OpenAQ, and WHO.
 
@@ -112,7 +145,7 @@ $$\text{Inhaled Mass } (\mu\text{g}) = C (\mu\text{g/m}^3) \times V_E (\text{m}^
 ## 🚀 Quickstart & Installation
 
 ### 1. Prerequisites
-- **Node.js**: v18+ (tested on Node v24)
+- **Node.js**: v18+ (tested on Node v20 / v24)
 - **Python**: v3.10+ (tested on Python v3.14)
 
 ---
@@ -165,9 +198,9 @@ npm run dev
 
 ```bash
 cd backend
-python -m pytest -v tests/test_vayucoach.py
+python -m pytest tests -v
 ```
-*Expected result: 11 passed (covers NAQI calculation, decision thresholds, HomeBreath simulator, dosimetry, uncertainty, and API endpoints).*
+*Expected result: 24 passed (100% test pass rate covering NAQI calculation, decision thresholds, HomeBreath simulator, dosimetry, uncertainty, email tokens, delivery status, and API endpoints).*
 
 ---
 
@@ -180,7 +213,7 @@ python -m pytest -v tests/test_vayucoach.py
 
 ### **Backend (Render / Railway / Fly.io)**
 - **Start command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-- Configure `GEMINI_API_KEY` in server environment settings.
+- Configure `GEMINI_API_KEY`, `SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD` in server environment settings.
 - CORS is pre-configured to support cross-origin requests.
 
 ---
@@ -192,4 +225,3 @@ python -m pytest -v tests/test_vayucoach.py
 3. **OpenAQ**: Global ambient air quality monitoring registry.
 4. **World Health Organization (WHO)**: 2021 Global Air Quality Guidelines Reference Limits.
 5. **U.S. EPA**: Exposure Factors Handbook (Respiratory Minute Volumes).
->>>>>>> bcfa1f0 (feat: complete VayuCoach urban air quality assistant with security, CPCB decision intelligence & SMTP notifications)
