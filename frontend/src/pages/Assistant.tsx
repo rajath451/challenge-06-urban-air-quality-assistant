@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import {
   Sparkles,
   Send,
@@ -18,6 +19,42 @@ interface AssistantProps {
   currentLocation: LocationInfo;
 }
 
+// Clean formatted markdown renderer for Assistant outputs (no exposed raw markdown symbols)
+const FormattedAssistantMessage: React.FC<{ content: string }> = ({ content }) => {
+  // Normalize bullet symbols (• or ●) to standard markdown unordered list items
+  const normalized = content.replace(/^[•●]\s*/gm, '- ');
+
+  return (
+    <div className="prose prose-sm max-w-none text-slate-800 text-xs sm:text-sm leading-relaxed space-y-2">
+      <ReactMarkdown
+        components={{
+          p: ({ children }) => <p className="mb-2 last:mb-0 leading-relaxed text-slate-800 font-normal">{children}</p>,
+          strong: ({ children }) => <strong className="font-bold text-slate-900">{children}</strong>,
+          em: ({ children }) => <em className="italic text-slate-700">{children}</em>,
+          ul: ({ children }) => <ul className="my-2 space-y-1.5 pl-4 list-disc marker:text-emerald-700">{children}</ul>,
+          ol: ({ children }) => <ol className="my-2 space-y-1.5 pl-4 list-decimal marker:text-emerald-700">{children}</ol>,
+          li: ({ children }) => <li className="leading-relaxed pl-1 text-slate-800">{children}</li>,
+          h1: ({ children }) => <h3 className="font-extrabold text-sm sm:text-base text-slate-900 mt-3 mb-1.5">{children}</h3>,
+          h2: ({ children }) => <h4 className="font-bold text-xs sm:text-sm text-slate-900 mt-2.5 mb-1">{children}</h4>,
+          h3: ({ children }) => <h5 className="font-bold text-xs text-slate-900 mt-2 mb-1">{children}</h5>,
+          code: ({ children }) => (
+            <code className="px-1.5 py-0.5 rounded-md font-mono text-[11px] bg-emerald-50 text-emerald-900 border border-emerald-200">
+              {children}
+            </code>
+          ),
+          blockquote: ({ children }) => (
+            <blockquote className="border-l-3 border-emerald-600 pl-3 my-2 text-slate-600 italic">
+              {children}
+            </blockquote>
+          )
+        }}
+      >
+        {normalized}
+      </ReactMarkdown>
+    </div>
+  );
+};
+
 export const Assistant: React.FC<AssistantProps> = ({
   readings,
   currentLocation
@@ -26,7 +63,7 @@ export const Assistant: React.FC<AssistantProps> = ({
     {
       id: 'welcome',
       role: 'assistant',
-      content: `Hello! I am your **VayuCoach Environmental Decision Intelligence Copilot** powered by Google Gemini.\n\nI am grounded in live monitoring telemetry for **${currentLocation.name}**:\n• **CPCB Indian NAQI**: **${readings.indian_naqi} (${readings.indian_naqi_category})**\n• **PM2.5**: **${readings.pm2_5} µg/m³**\n• **Coastal Wind**: **${readings.wind_speed} km/h** (${readings.weather_condition})\n\nAsk me anything about safe exercise times, window ventilation, cooking exhaust protocols, or particulate dosimetry.`,
+      content: `Hello! I am your **VayuCoach Environmental Decision Intelligence Copilot** powered by Google Gemini.\n\nI am grounded in live monitoring telemetry for **${currentLocation.name}**:\n- **CPCB Indian NAQI**: **${readings.indian_naqi} (${readings.indian_naqi_category})**\n- **PM2.5**: **${readings.pm2_5} µg/m³**\n- **Coastal Wind**: **${readings.wind_speed} km/h** (${readings.weather_condition})\n\nAsk me anything about safe exercise times, window ventilation, cooking exhaust protocols, or particulate dosimetry.`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -142,9 +179,13 @@ export const Assistant: React.FC<AssistantProps> = ({
                       : 'bg-white border border-slate-200/90 text-slate-800 rounded-tl-xs'
                   }`}
                 >
-                  <div className="space-y-2 whitespace-pre-wrap font-sans">
-                    {msg.content}
-                  </div>
+                  {isUser ? (
+                    <div className="whitespace-pre-wrap font-sans text-white">
+                      {msg.content}
+                    </div>
+                  ) : (
+                    <FormattedAssistantMessage content={msg.content} />
+                  )}
                 </div>
 
                 <span className={`text-[10px] font-mono text-slate-400 block ${isUser ? 'text-right' : 'text-left'}`}>
