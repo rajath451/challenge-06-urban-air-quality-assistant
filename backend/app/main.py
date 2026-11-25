@@ -30,6 +30,17 @@ app.include_router(exposure.router)
 app.include_router(assistant.router)
 app.include_router(transparency.router)
 
+@app.get("/")
+async def root():
+    return {
+        "status": "online",
+        "service": "VayuCoach Environmental Decision Intelligence API",
+        "version": "2.5.0",
+        "cpcb_naqi": "Active",
+        "docs_url": "/docs",
+        "health_url": "/api/health"
+    }
+
 @app.get("/api/health")
 async def health_check():
     return {
