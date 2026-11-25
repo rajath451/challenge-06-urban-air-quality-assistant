@@ -137,19 +137,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     }
   };
 
-  const fillDemo = (userRole: 'user' | 'admin') => {
-    setError(null);
-    setSuccessMsg(null);
-    setTab('login');
-    if (userRole === 'user') {
-      setEmail('user@vayucoach.in');
-      setPassword('User@123');
-    } else {
-      setEmail('admin@vayucoach.in');
-      setPassword('Admin@123');
-    }
-  };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
       <div className="relative w-full max-w-md bg-[#0F172A] border border-slate-800 rounded-2xl shadow-2xl p-6 border-t-2 border-t-emerald-500 overflow-hidden text-slate-100">
@@ -186,41 +173,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           </div>
         </div>
 
-        {/* Quick Evaluator Demo Logins Box */}
-        {(tab === 'login' || tab === 'register') && (
-          <div className="mt-4 mb-4 p-3.5 rounded-xl bg-slate-900/70 border border-slate-800">
-            <div className="flex items-center justify-between text-xs font-semibold text-slate-300 mb-2.5">
-              <span className="flex items-center gap-1.5 text-slate-200">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                ✨ Quick Evaluator Demo Logins
-              </span>
-              <span className="text-[10px] text-emerald-400 font-mono uppercase bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/40">
-                1-Click
-              </span>
-            </div>
-            <div className="grid grid-cols-2 gap-2.5">
-              <button
-                type="button"
-                onClick={() => fillDemo('user')}
-                className="py-1.5 px-2.5 rounded-lg text-xs font-medium text-emerald-300 bg-emerald-950/30 hover:bg-emerald-900/50 border border-emerald-500/30 transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
-              >
-                <UserIcon className="w-3.5 h-3.5 text-emerald-400" />
-                Citizen User
-              </button>
-              <button
-                type="button"
-                onClick={() => fillDemo('admin')}
-                className="py-1.5 px-2.5 rounded-lg text-xs font-medium text-indigo-300 bg-indigo-950/30 hover:bg-indigo-900/50 border border-indigo-500/30 transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
-              >
-                <Shield className="w-3.5 h-3.5 text-indigo-400" />
-                Admin Officer
-              </button>
-            </div>
-          </div>
-        )}
-
         {/* 4-Column Auth Tabs with Emerald Bottom Indicator */}
-        <div className="flex border-b border-slate-800 mb-4 text-xs font-medium">
+        <div className="flex border-b border-slate-800 mt-4 mb-4 text-xs font-medium">
           <button
             type="button"
             onClick={() => { setTab('login'); setError(null); }}

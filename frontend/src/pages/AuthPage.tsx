@@ -21,10 +21,9 @@ import { User, DEFAULT_SENSITIVITY_PROFILE } from '../types/auth';
 
 interface AuthPageProps {
   onSuccess: (user: User) => void;
-  onContinueAsGuest: () => void;
 }
 
-export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess, onContinueAsGuest }) => {
+export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess }) => {
   const [mode, setMode] = useState<'signin' | 'signup' | 'forgot'>('signin');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -34,48 +33,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess, onContinueAsGuest
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
-
-  // Quick 1-click evaluator demo accounts
-  const handleQuickDemo = async (role: 'citizen' | 'admin') => {
-    setError(null);
-    setSuccessMsg(null);
-    setLoading(true);
-
-    const demoEmail = role === 'admin' ? 'admin@vayucoach.in' : 'user@vayucoach.in';
-    const demoPass = 'VayuCoach@2026';
-    const demoName = role === 'admin' ? 'Environmental Officer' : 'Citizen Evaluator';
-
-    try {
-      // 1. Attempt backend direct login
-      try {
-        const res = await loginUser(demoEmail, demoPass);
-        saveAuthSession(res.access_token, res.user);
-        setSuccessMsg(`Welcome, ${res.user.name} (${role === 'admin' ? 'Admin Officer' : 'Citizen User'})!`);
-        setTimeout(() => onSuccess(res.user), 400);
-        return;
-      } catch {
-        // Fallback to local session
-      }
-
-      // 2. Fallback mock session for instant evaluator access
-      const fallbackUser: User = {
-        id: role === 'admin' ? 'demo-admin-id' : 'demo-user-id',
-        email: demoEmail,
-        name: demoName,
-        role: role === 'admin' ? 'admin' : 'user',
-        is_verified: true,
-        created_at: new Date().toISOString(),
-        sensitivity_profile: DEFAULT_SENSITIVITY_PROFILE
-      };
-      saveAuthSession('mock_supabase_token_' + role, fallbackUser);
-      setSuccessMsg(`Logged in as demo ${role === 'admin' ? 'Admin Officer' : 'Citizen User'}!`);
-      setTimeout(() => onSuccess(fallbackUser), 400);
-    } catch (err: any) {
-      setError(err.message || 'Demo login failed');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Handle Form Submission (Sign In / Sign Up / Forgot Password)
   const handleSubmit = async (e: React.FormEvent) => {
@@ -198,14 +155,10 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess, onContinueAsGuest
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={onContinueAsGuest}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/80 transition shadow-sm"
-          >
-            <span>Explore as Guest</span>
-            <ArrowRight className="w-3.5 h-3.5 text-emerald-400" />
-          </button>
+          <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 bg-emerald-950/50 border border-emerald-500/30 px-3 py-1.5 rounded-lg">
+            <Shield className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Supabase Secured</span>
+          </div>
         </div>
       </header>
 
@@ -270,7 +223,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess, onContinueAsGuest
             </div>
             <div className="flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>Instant Guest Access</span>
+              <span>Encrypted JWT Sessions</span>
             </div>
             <div className="flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
@@ -301,37 +254,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess, onContinueAsGuest
               <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-300">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
                 <span>Supabase Live</span>
-              </div>
-            </div>
-
-            {/* Quick Evaluator 1-Click Demo Logins */}
-            <div className="mb-5 p-3 rounded-2xl bg-slate-900/90 border border-slate-800/90">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-300">
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>1-Click Evaluator Logins</span>
-                </div>
-                <span className="text-[10px] font-mono text-slate-500">Instant Access</span>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemo('citizen')}
-                  disabled={loading}
-                  className="px-3 py-2 rounded-xl text-xs font-medium bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-500/30 text-emerald-300 flex items-center justify-center gap-1.5 transition disabled:opacity-50"
-                >
-                  <UserIcon className="w-3.5 h-3.5" />
-                  <span>Citizen User</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemo('admin')}
-                  disabled={loading}
-                  className="px-3 py-2 rounded-xl text-xs font-medium bg-indigo-950/40 hover:bg-indigo-900/50 border border-indigo-500/30 text-indigo-300 flex items-center justify-center gap-1.5 transition disabled:opacity-50"
-                >
-                  <Shield className="w-3.5 h-3.5" />
-                  <span>Admin Officer</span>
-                </button>
               </div>
             </div>
 
@@ -527,17 +449,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess, onContinueAsGuest
                   </button>
                 </div>
               )}
-
-              <div className="mt-4 pt-3 border-t border-slate-800/60">
-                <button
-                  type="button"
-                  onClick={onContinueAsGuest}
-                  className="text-xs text-slate-400 hover:text-emerald-300 font-mono flex items-center justify-center gap-1 mx-auto transition"
-                >
-                  <span>Skip authentication & browse live telemetry</span>
-                  <ArrowRight className="w-3 h-3 text-emerald-400" />
-                </button>
-              </div>
             </div>
 
           </div>
