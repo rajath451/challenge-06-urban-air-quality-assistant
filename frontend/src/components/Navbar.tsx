@@ -44,6 +44,7 @@ interface NavItem {
   badge?: string;
   desc: string;
   category: string;
+  visibilityClass?: string;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -71,7 +72,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       label: 'Overview',
       icon: HomeIcon,
       desc: 'Air quality summary, hero highlights & core stations',
-      category: 'General'
+      category: 'General',
+      visibilityClass: 'hidden 2xl:flex'
     },
     {
       id: 'dashboard',
@@ -90,7 +92,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     },
     {
       id: 'planner',
-      label: 'Best Time Planner',
+      label: 'Planner',
       icon: Calendar,
       desc: '24-Hour diurnal outdoor exercise safety forecasting',
       category: 'Intelligence'
@@ -101,20 +103,22 @@ export const Navbar: React.FC<NavbarProps> = ({
       icon: Wind,
       badge: 'VIRTUAL',
       desc: 'Multi-zone room physics, air change rate & HEPA filtration',
-      category: 'Simulation'
+      category: 'Simulation',
+      visibilityClass: 'hidden xl:flex'
     },
     {
       id: 'exposure',
       label: 'Exposure Dose',
       icon: Activity,
       desc: 'ICRP respiratory lung deposition & particle mass uptake',
-      category: 'Health'
+      category: 'Health',
+      visibilityClass: 'hidden 2xl:flex'
     },
     {
       id: 'assistant',
       label: 'AI Copilot',
       icon: Sparkles,
-      badge: 'GEMINI',
+      badge: 'VOICE',
       desc: 'Grounded atmospheric reasoning with Speech-to-Text & TTS',
       category: 'AI Assistant'
     },
@@ -123,15 +127,17 @@ export const Navbar: React.FC<NavbarProps> = ({
       label: 'Transparency',
       icon: ShieldCheck,
       desc: 'CPCB calibration breakpoints & governance audit logs',
-      category: 'Governance'
+      category: 'Governance',
+      visibilityClass: 'hidden 2xl:flex'
     },
     ...(isAdmin ? [{
       id: 'admin',
-      label: 'Admin Console',
+      label: 'Admin',
       icon: ShieldAlert,
       badge: 'GOV',
       desc: 'Station calibration, public broadcasts & SMTP relays',
-      category: 'Administration'
+      category: 'Administration',
+      visibilityClass: 'hidden 2xl:flex'
     }] : [])
   ];
 
@@ -173,51 +179,51 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#0B1320] border-b border-slate-800/80 shadow-md">
-      <div className="max-w-[1440px] mx-auto px-3 lg:px-5 h-16 flex items-center justify-between gap-3">
+      <div className="w-full max-w-[1536px] mx-auto px-2 sm:px-4 lg:px-6 h-16 flex items-center justify-between gap-2 xl:gap-3">
         
-        {/* Left Brand Section */}
+        {/* Left Brand Section (shrink-0, pinned) */}
         <div
           onClick={() => handleNavClick('landing')}
-          className="flex items-center gap-2.5 cursor-pointer select-none group shrink-0"
+          className="flex items-center gap-2 cursor-pointer select-none group shrink-0"
         >
-          <div className="w-9 h-9 rounded-lg bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:border-emerald-400 transition-all">
-            <Wind className="w-5 h-5 text-emerald-400" />
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:border-emerald-400 transition-all">
+            <Wind className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
           </div>
           <div className="flex flex-col justify-center">
             <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-base sm:text-lg tracking-tight text-white font-sans leading-none">
+              <span className="font-extrabold text-sm sm:text-base tracking-tight text-white font-sans leading-none">
                 Vayu<span className="text-emerald-400">Coach</span>
               </span>
-              <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider rounded-md bg-emerald-950/70 text-emerald-300 border border-emerald-800">
+              <span className="px-1.5 py-0.5 text-[8px] sm:text-[9px] font-mono font-bold uppercase tracking-wider rounded-md bg-emerald-950/70 text-emerald-300 border border-emerald-800">
                 CPCB NAQI
               </span>
             </div>
-            <p className="text-[10px] text-slate-400 leading-tight whitespace-nowrap mt-1 hidden sm:block">
+            <p className="text-[10px] text-slate-400 leading-tight whitespace-nowrap mt-0.5 hidden md:block">
               Understand Your Air. Make Better Decisions.
             </p>
           </div>
         </div>
 
-        {/* Center Navigation Links with Hover Effects & Preview Cards */}
-        <nav className="hidden min-[1100px]:flex items-center gap-1 xl:gap-1.5 overflow-visible">
+        {/* Center Navigation Links (shrinkable, zero clipping on laptops) */}
+        <nav className="hidden min-[1050px]:flex items-center gap-1 xl:gap-1.5 shrink min-w-0">
           
-          {/* "All Functions" Hover Mega Dropdown Trigger */}
+          {/* "All Functions" Mega Dropdown on Hover */}
           <div
-            className="relative"
+            className="relative shrink-0"
             onMouseEnter={handleMouseEnterModules}
             onMouseLeave={handleMouseLeaveModules}
           >
             <button
               type="button"
-              className={`flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap shrink-0 transition-all duration-150 cursor-pointer border ${
+              className={`flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer border ${
                 modulesHoverOpen
-                  ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/50 shadow-md shadow-emerald-950/50'
-                  : 'bg-slate-900/60 text-slate-300 hover:text-white border-slate-700/60 hover:border-emerald-500/40 hover:bg-slate-800/80'
+                  ? 'bg-emerald-950/90 text-emerald-300 border-emerald-500 shadow-md shadow-emerald-950/50'
+                  : 'bg-slate-900/70 text-slate-200 hover:text-white border-slate-700/80 hover:border-emerald-500/50 hover:bg-slate-800'
               }`}
             >
-              <Layers className="w-3.5 h-3.5 text-emerald-400" />
+              <Layers className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
               <span>All Functions</span>
-              <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform duration-200 ${modulesHoverOpen ? 'rotate-180 text-emerald-400' : ''}`} />
+              <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform duration-200 shrink-0 ${modulesHoverOpen ? 'rotate-180 text-emerald-400' : ''}`} />
             </button>
 
             {/* Mega Dropdown Panel on Hover */}
@@ -273,25 +279,42 @@ export const Navbar: React.FC<NavbarProps> = ({
                     );
                   })}
                 </div>
+
+                {/* Quick User & Sign Out bar inside dropdown */}
+                {currentUser && (
+                  <div className="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs">
+                    <span className="text-slate-400">
+                      Logged in as <strong className="text-slate-200">{currentUser.name}</strong>
+                    </span>
+                    <button
+                      onClick={onLogout}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-rose-300 hover:text-white bg-rose-950/60 hover:bg-rose-900 border border-rose-800/60 transition cursor-pointer font-medium text-xs"
+                    >
+                      <LogOut className="w-3.5 h-3.5 text-rose-400" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
 
-          <div className="h-4 w-px bg-slate-800 mx-0.5" />
+          <div className="h-4 w-px bg-slate-800 mx-0.5 shrink-0" />
 
           {/* Individual Navigation Buttons with Hover Tooltip Previews */}
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
+            const visibility = item.visibilityClass || 'flex';
 
             return (
-              <div key={item.id} className="relative group/nav">
+              <div key={item.id} className={`relative group/nav shrink-0 ${visibility}`}>
                 <button
                   onClick={() => handleNavClick(item.id)}
-                  className={`flex items-center gap-1 px-2 xl:px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap shrink-0 transition-all duration-200 cursor-pointer ${
+                  className={`flex items-center gap-1 px-2 xl:px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all duration-200 cursor-pointer ${
                     isActive
                       ? 'bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 text-white font-semibold shadow-md shadow-emerald-700/30 ring-1 ring-emerald-400/40'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800 hover:border-slate-700 hover:shadow-sm'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800 hover:border-slate-700 hover:shadow-xs'
                   }`}
                 >
                   <Icon className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover/nav:scale-110 ${isActive ? 'text-white' : 'text-slate-400 group-hover/nav:text-emerald-400'}`} />
@@ -313,7 +336,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
 
                 {/* Instant Hover Tooltip Preview */}
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 p-2.5 rounded-xl bg-[#0F172A] border border-slate-800 shadow-xl opacity-0 group-hover/nav:opacity-100 pointer-events-none translate-y-1 group-hover/nav:translate-y-0 transition-all duration-200 z-50 hidden xl:block border-t border-t-emerald-500/80">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 p-2.5 rounded-xl bg-[#0F172A] border border-slate-800 shadow-xl opacity-0 group-hover/nav:opacity-100 pointer-events-none translate-y-1 group-hover/nav:translate-y-0 transition-all duration-200 z-50 hidden 2xl:block border-t border-t-emerald-500/80">
                   <div className="flex items-center gap-1.5 mb-1">
                     <Icon className="w-3.5 h-3.5 text-emerald-400" />
                     <span className="text-xs font-bold text-white">{item.label}</span>
@@ -331,17 +354,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           })}
         </nav>
 
-        {/* Right Auth / Profile Action & Quick Controls */}
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        {/* Right Auth / Profile & Quick Controls (ALWAYS shrink-0, NEVER pushed off-screen) */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto">
 
           {/* Location Pill */}
           <button
             onClick={onOpenCityModal}
             title={`Switch monitoring station (Current: ${currentLocation.name})`}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-900/90 border border-slate-700 hover:border-emerald-500 text-xs text-slate-200 shadow-2xs hover:bg-slate-800 transition-all cursor-pointer whitespace-nowrap shrink-0"
+            className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg bg-slate-900/90 border border-slate-700 hover:border-emerald-500 text-xs text-slate-200 shadow-2xs hover:bg-slate-800 transition-all cursor-pointer whitespace-nowrap shrink-0"
           >
             <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-            <span className="font-semibold text-xs max-w-[80px] sm:max-w-[100px] truncate">
+            <span className="font-semibold text-xs max-w-[70px] sm:max-w-[95px] truncate">
               {cityName}
             </span>
           </button>
@@ -360,7 +383,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="font-bold text-xs">
               {naqiVal}
             </span>
-            <span className="text-[10px] font-semibold hidden md:inline opacity-95">
+            <span className="text-[10px] font-semibold hidden lg:inline opacity-95">
               {naqiCat}
             </span>
           </div>
@@ -385,28 +408,33 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-[#0B1320]" />
           </button>
 
-          {/* Pinned Auth Button / Logged-in User Profile Pill */}
+          {/* User Profile Pill & Pinned SIGN OUT Button (shrink-0, Prominently Visible) */}
           <div className="shrink-0">
             {currentUser ? (
-              <div className="flex items-center gap-1.5 bg-slate-900/90 pl-2 pr-1 py-1 rounded-lg border border-slate-700 text-xs shrink-0">
-                <span className="font-semibold text-slate-200 max-w-[75px] sm:max-w-[100px] truncate text-xs">
-                  {currentUser.name.split(' ')[0]}
-                </span>
+              <div className="flex items-center gap-1.5 bg-slate-900/95 pl-2 pr-1.5 py-1 rounded-lg border border-slate-700/90 text-xs shrink-0 shadow-xs">
+                <div className="flex items-center gap-1 max-w-[70px] sm:max-w-[90px] truncate">
+                  <UserIcon className="w-3 h-3 text-emerald-400 shrink-0" />
+                  <span className="font-semibold text-slate-200 truncate text-xs">
+                    {currentUser.name.split(' ')[0]}
+                  </span>
+                </div>
                 {currentUser.role === 'admin' ? (
-                  <span className="px-1.5 py-0.2 rounded text-[8px] font-mono font-bold uppercase bg-indigo-950 text-indigo-300 border border-indigo-800">
+                  <span className="px-1 py-0.2 rounded text-[8px] font-mono font-bold uppercase bg-indigo-950 text-indigo-300 border border-indigo-800 shrink-0">
                     Admin
                   </span>
                 ) : (
-                  <span className="px-1.5 py-0.2 rounded text-[8px] font-mono font-bold uppercase bg-emerald-950 text-emerald-300 border border-emerald-800">
-                    Citizen
+                  <span className="px-1 py-0.2 rounded text-[8px] font-mono font-bold uppercase bg-emerald-950 text-emerald-300 border border-emerald-800 shrink-0">
+                    User
                   </span>
                 )}
+                {/* Dedicated High-Contrast Sign Out Button */}
                 <button
                   onClick={onLogout}
-                  title="Sign Out"
-                  className="p-1 rounded text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition cursor-pointer"
+                  title="Sign Out of VayuCoach"
+                  className="flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold text-rose-200 hover:text-white bg-rose-900/80 hover:bg-rose-700 border border-rose-600/50 transition cursor-pointer shrink-0 shadow-xs"
                 >
-                  <LogOut className="w-3.5 h-3.5" />
+                  <LogOut className="w-3 h-3 text-rose-300 shrink-0" />
+                  <span className="inline">Sign Out</span>
                 </button>
               </div>
             ) : (
@@ -420,11 +448,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
-          {/* Mobile / Tablet Hamburger Toggle (< 1100px) */}
+          {/* Mobile / Tablet Hamburger Toggle (< 1050px) */}
           <button
             onClick={() => setMobileDrawerOpen((prev) => !prev)}
             aria-label="Toggle Navigation Menu"
-            className="min-[1100px]:hidden p-1.5 rounded-lg bg-slate-900/90 border border-slate-700 text-slate-300 hover:text-white hover:border-slate-600 transition cursor-pointer shrink-0"
+            className="min-[1050px]:hidden p-1.5 rounded-lg bg-slate-900/90 border border-slate-700 text-slate-300 hover:text-white hover:border-slate-600 transition cursor-pointer shrink-0"
           >
             {mobileDrawerOpen ? <X className="w-4 h-4 text-emerald-400" /> : <Menu className="w-4 h-4" />}
           </button>
@@ -432,9 +460,9 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer Menu (< 1050px) */}
       {mobileDrawerOpen && (
-        <div className="min-[1100px]:hidden bg-[#0F172A] border-b border-slate-800 p-4 space-y-2 animate-fadeIn shadow-2xl">
+        <div className="min-[1050px]:hidden bg-[#0F172A] border-b border-slate-800 p-4 space-y-2 animate-fadeIn shadow-2xl">
           <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 px-2 pb-1 border-b border-slate-800 mb-2">
             Navigation Modules
           </div>
@@ -469,6 +497,22 @@ export const Navbar: React.FC<NavbarProps> = ({
               );
             })}
           </div>
+
+          {/* Drawer Sign Out button */}
+          {currentUser && (
+            <div className="mt-3 pt-3 border-t border-slate-800 flex items-center justify-between">
+              <span className="text-xs text-slate-400">
+                Signed in as <strong className="text-white">{currentUser.name}</strong>
+              </span>
+              <button
+                onClick={onLogout}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-rose-300 bg-rose-950/60 hover:bg-rose-900 border border-rose-800 transition"
+              >
+                <LogOut className="w-3.5 h-3.5 text-rose-400" />
+                <span>Sign Out</span>
+              </button>
+            </div>
+          )}
         </div>
       )}
     </header>
