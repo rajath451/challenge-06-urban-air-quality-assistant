@@ -1,4 +1,5 @@
 import pytest
+from datetime import datetime, timedelta, timezone
 from fastapi.testclient import TestClient
 from app.main import app
 from app.services.data_normalizer import calculate_indian_naqi, calculate_us_aqi, assess_data_quality
@@ -47,7 +48,8 @@ def test_us_aqi_breakpoints():
     assert cat == "Moderate"
 
 def test_data_quality_assessment():
-    quality = assess_data_quality("2026-11-24T16:30:00Z")
+    recent_ts = (datetime.now(timezone.utc) - timedelta(minutes=15)).isoformat()
+    quality = assess_data_quality(recent_ts)
     assert "age_minutes" in quality
     assert quality["is_acceptable_for_decision"] is True
 

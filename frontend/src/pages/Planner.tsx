@@ -63,15 +63,15 @@ export const Planner: React.FC<PlannerProps> = ({
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8 animate-fade-in w-full overflow-hidden">
       
       {/* Header */}
       <div className="pb-4 border-b border-slate-200/80">
-        <div className="flex items-center gap-2 text-xs font-mono font-semibold text-emerald-800 uppercase tracking-wider">
+        <div className="flex items-center gap-2 text-[10px] sm:text-xs font-mono font-semibold text-emerald-800 uppercase tracking-wider">
           <Calendar className="w-3.5 h-3.5" />
           <span>24-Hour Atmospheric Trajectory & Suitability Engine</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-sans tracking-tight mt-0.5">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 font-sans tracking-tight mt-0.5 break-words">
           Best Time Activity Planner
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-3xl">
