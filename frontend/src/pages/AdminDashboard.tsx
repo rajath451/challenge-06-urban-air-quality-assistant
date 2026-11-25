@@ -214,7 +214,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentUser, onO
               <ArrowRight className="w-4 h-4" />
             </button>
             <p className="text-xs text-slate-500">
-              Evaluator Quick Login: Click "Sign In" and choose "Admin Officer".
+              Evaluator Login: Sign in with <span className="font-mono text-indigo-400">admin@vayucoach.in</span> / <span className="font-mono text-indigo-400">Admin@123</span>
             </p>
           </div>
         </div>
