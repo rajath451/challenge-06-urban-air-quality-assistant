@@ -1,11 +1,22 @@
 import { createClient, SupabaseClient, User as SupabaseUser } from '@supabase/supabase-js';
 
-// Load Supabase environment variables from Vite
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://vayucoach-urban-air.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mock_anon_key_for_vayucoach_urban_air_quality_assistant';
+// Load Supabase environment variables from Vite or Next.js conventions
+const supabaseUrl =
+  import.meta.env.VITE_SUPABASE_URL ||
+  import.meta.env.NEXT_PUBLIC_SUPABASE_URL ||
+  'https://hgtmchduyftmddmkeraj.supabase.co';
+
+const supabaseAnonKey =
+  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  import.meta.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  import.meta.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  'sb_publishable_lEZXRMMqx5RjqsjnVF5QtA_abOyIw3X';
 
 export const isSupabaseConfigured = Boolean(
-  import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY
+  supabaseUrl &&
+  supabaseAnonKey &&
+  !supabaseAnonKey.includes('mock_anon_key')
 );
 
 // Initialize Supabase Client

@@ -16,8 +16,17 @@ class Settings:
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
 
     # Database & Authentication: Supabase
-    SUPABASE_URL: str = os.getenv("SUPABASE_URL", "https://vayucoach-urban-air.supabase.co")
-    SUPABASE_ANON_KEY: str = os.getenv("SUPABASE_ANON_KEY", "")
+    SUPABASE_URL: str = (
+        os.getenv("SUPABASE_URL")
+        or os.getenv("NEXT_PUBLIC_SUPABASE_URL")
+        or "https://hgtmchduyftmddmkeraj.supabase.co"
+    )
+    SUPABASE_ANON_KEY: str = (
+        os.getenv("SUPABASE_ANON_KEY")
+        or os.getenv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY")
+        or os.getenv("VITE_SUPABASE_ANON_KEY")
+        or "sb_publishable_lEZXRMMqx5RjqsjnVF5QtA_abOyIw3X"
+    )
     SUPABASE_SERVICE_ROLE_KEY: str = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
 
     # Security
