@@ -27,7 +27,7 @@ interface NavbarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   readings: EnvironmentalReadings | null;
-  currentLocation: LocationInfo;
+  currentLocation: LocationInfo | null;
   onOpenCityModal: () => void;
   onRefresh: () => void;
   isLoading: boolean;
@@ -158,7 +158,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const badgeColor = getNaqiColor(naqiCat);
-  const cityName = currentLocation.name.split(',')[0].trim();
+  const cityName = currentLocation ? currentLocation.name.split(',')[0].trim() : 'Select Station';
 
   const handleNavClick = (id: string) => {
     setActiveTab(id);
@@ -360,7 +360,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Location Pill */}
           <button
             onClick={onOpenCityModal}
-            title={`Switch monitoring station (Current: ${currentLocation.name})`}
+            title={currentLocation ? `Switch monitoring station (Current: ${currentLocation.name})` : 'Select monitoring station'}
             className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg bg-slate-900/90 border border-slate-700 hover:border-emerald-500 text-xs text-slate-200 shadow-2xs hover:bg-slate-800 transition-all cursor-pointer whitespace-nowrap shrink-0"
           >
             <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
@@ -370,23 +370,33 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           {/* Live NAQI Badge */}
-          <div
-            className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-lg border shadow-2xs font-mono select-none whitespace-nowrap shrink-0"
-            style={{
-              backgroundColor: `${badgeColor}18`,
-              borderColor: `${badgeColor}40`,
-              color: badgeColor
-            }}
-            title={`Current Indian NAQI: ${naqiVal} (${naqiCat})`}
-          >
-            <span className="w-2 h-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: badgeColor }} />
-            <span className="font-bold text-xs">
-              {naqiVal}
-            </span>
-            <span className="text-[10px] font-semibold hidden lg:inline opacity-95">
-              {naqiCat}
-            </span>
-          </div>
+          {currentLocation && readings ? (
+            <div
+              className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-lg border shadow-2xs font-mono select-none whitespace-nowrap shrink-0"
+              style={{
+                backgroundColor: `${badgeColor}18`,
+                borderColor: `${badgeColor}40`,
+                color: badgeColor
+              }}
+              title={`Current Indian NAQI: ${naqiVal} (${naqiCat})`}
+            >
+              <span className="w-2 h-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: badgeColor }} />
+              <span className="font-bold text-xs">
+                {naqiVal}
+              </span>
+              <span className="text-[10px] font-semibold hidden lg:inline opacity-95">
+                {naqiCat}
+              </span>
+            </div>
+          ) : (
+            <button
+              onClick={onOpenCityModal}
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-emerald-500/40 bg-emerald-950/40 text-emerald-300 font-mono text-[11px] font-semibold hover:bg-emerald-900/60 transition cursor-pointer shrink-0"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Choose Station</span>
+            </button>
+          )}
 
           {/* Refresh Feed (Desktop & Tablet) */}
           <button

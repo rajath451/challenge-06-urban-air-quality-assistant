@@ -36,8 +36,8 @@ import {
 import { EnvironmentalReadings, LocationInfo } from '../types';
 
 interface DashboardProps {
-  readings: EnvironmentalReadings;
-  currentLocation: LocationInfo;
+  readings: EnvironmentalReadings | null;
+  currentLocation: LocationInfo | null;
   onNavigate: (tab: string) => void;
   onOpenCityModal: () => void;
 }
@@ -49,6 +49,32 @@ export const Dashboard: React.FC<DashboardProps> = ({
   onOpenCityModal
 }) => {
   const [timeFilter, setTimeFilter] = useState<'24h' | '7d' | '30d'>('24h');
+
+  // Empty State: when no location has been selected yet
+  if (!currentLocation || !readings) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-16 sm:py-24 text-center font-sans animate-fade-in">
+        <div className="rounded-3xl bg-white p-8 sm:p-14 border border-slate-200/90 shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-4 border border-emerald-200">
+            <MapPin className="w-8 h-8" />
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-slate-900 mb-3">
+            No Monitoring Station Selected
+          </h2>
+          <p className="text-sm sm:text-base text-slate-600 mb-8 max-w-lg mx-auto leading-relaxed">
+            Select an Indian city or regional CAAQMS station to view live CPCB air quality telemetry, criteria pollutants, and personalized decision protocols.
+          </p>
+          <button
+            onClick={onOpenCityModal}
+            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm shadow-md shadow-emerald-950/20 transition cursor-pointer"
+          >
+            <MapPin className="w-4 h-4" />
+            <span>Choose Monitoring Station</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const {
     pm2_5,

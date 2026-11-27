@@ -26,8 +26,9 @@ import { EnvironmentalReadings, LocationInfo, ChatMessage } from '../types';
 import { askAssistant } from '../services/api';
 
 interface AssistantProps {
-  readings: EnvironmentalReadings;
-  currentLocation: LocationInfo;
+  readings: EnvironmentalReadings | null;
+  currentLocation: LocationInfo | null;
+  onOpenCityModal?: () => void;
 }
 
 // Clean formatted markdown renderer for Assistant outputs (no exposed raw markdown symbols)
@@ -78,12 +79,15 @@ function cleanMarkdownForSpeech(text: string): string {
 
 export const Assistant: React.FC<AssistantProps> = ({
   readings,
-  currentLocation
+  currentLocation,
+  onOpenCityModal
 }) => {
   const initialWelcomeMsg: ChatMessage = {
     id: 'welcome',
     role: 'assistant',
-    content: `Hello! I am your **VayuCoach Environmental Decision Intelligence Copilot** powered by Google Gemini.\n\nI am grounded in live monitoring telemetry for **${currentLocation.name}**:\n- **CPCB Indian NAQI**: **${readings.indian_naqi} (${readings.indian_naqi_category})**\n- **PM2.5**: **${readings.pm2_5} µg/m³**\n- **Atmospheric Wind**: **${readings.wind_speed} km/h** (${readings.weather_condition})\n\nYou can ask me about workout timings, indoor air safety, or speak using the **Microphone**!`,
+    content: currentLocation && readings
+      ? `Hello! I am your **VayuCoach Environmental Decision Intelligence Copilot** powered by Google Gemini.\n\nI am grounded in live monitoring telemetry for **${currentLocation.name}**:\n- **CPCB Indian NAQI**: **${readings.indian_naqi} (${readings.indian_naqi_category})**\n- **PM2.5**: **${readings.pm2_5} µg/m³**\n- **Atmospheric Wind**: **${readings.wind_speed} km/h** (${readings.weather_condition})\n\nYou can ask me about workout timings, indoor air safety, or speak using the **Microphone**!`
+      : `Hello! I am your **VayuCoach Environmental Decision Intelligence Copilot** powered by Google Gemini.\n\nNo monitoring station has been selected yet. Please select an active monitoring station so I can calibrate my advice with real-time CPCB telemetry!`,
     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   };
 
@@ -280,7 +284,7 @@ export const Assistant: React.FC<AssistantProps> = ({
     setIsTyping(true);
 
     try {
-      const response = await askAssistant(query, messages, readings, currentLocation);
+      const response = await askAssistant(query, messages, readings || undefined, currentLocation || undefined);
 
       const botMsgId = `bot-${Date.now()}`;
       const botMsg: ChatMessage = {
@@ -346,7 +350,9 @@ export const Assistant: React.FC<AssistantProps> = ({
               </span>
             </div>
             <p className="text-[11px] text-slate-500 font-mono truncate">
-              {currentLocation.name.split(',')[0]} • CPCB NAQI {readings.indian_naqi} ({readings.indian_naqi_category}) • PM2.5: {readings.pm2_5} µg/m³
+              {currentLocation
+                ? `${currentLocation.name.split(',')[0]} • CPCB NAQI ${readings?.indian_naqi ?? '--'} (${readings?.indian_naqi_category ?? 'Unselected'}) • PM2.5: ${readings?.pm2_5 ?? '--'} µg/m³`
+                : 'No station selected • Click Switch Station above to calibrate'}
             </p>
           </div>
         </div>

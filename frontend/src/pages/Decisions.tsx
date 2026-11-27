@@ -16,15 +16,17 @@ import { EnvironmentalReadings, LocationInfo, DecisionItem, DecisionResponse } f
 import { fetchDecisions } from '../services/api';
 
 interface DecisionsProps {
-  readings: EnvironmentalReadings;
-  currentLocation: LocationInfo;
+  readings: EnvironmentalReadings | null;
+  currentLocation: LocationInfo | null;
   onNavigate: (tab: string) => void;
+  onOpenCityModal: () => void;
 }
 
 export const Decisions: React.FC<DecisionsProps> = ({
   readings,
   currentLocation,
-  onNavigate
+  onNavigate,
+  onOpenCityModal
 }) => {
   const [decisionData, setDecisionData] = useState<DecisionResponse | null>(null);
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
@@ -32,6 +34,10 @@ export const Decisions: React.FC<DecisionsProps> = ({
 
   useEffect(() => {
     async function load() {
+      if (!readings || !currentLocation) {
+        setIsLoading(false);
+        return;
+      }
       setIsLoading(true);
       try {
         const res = await fetchDecisions(readings, currentLocation);
@@ -44,6 +50,31 @@ export const Decisions: React.FC<DecisionsProps> = ({
     }
     load();
   }, [readings, currentLocation]);
+
+  if (!currentLocation || !readings) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-16 sm:py-24 text-center font-sans animate-fade-in">
+        <div className="rounded-3xl bg-white p-8 sm:p-14 border border-slate-200/90 shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-4 border border-emerald-200">
+            <Compass className="w-8 h-8" />
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-slate-900 mb-3">
+            Select a Monitoring Station
+          </h2>
+          <p className="text-sm sm:text-base text-slate-600 mb-8 max-w-lg mx-auto leading-relaxed">
+            Real-time outdoor activity safety, window ventilation timing, and mask requirements depend on local atmospheric telemetry.
+          </p>
+          <button
+            onClick={onOpenCityModal}
+            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm shadow-md shadow-emerald-950/20 transition cursor-pointer"
+          >
+            <span>Choose Monitoring Station</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const filterOptions = [
     { id: 'all', label: 'All Activities' },

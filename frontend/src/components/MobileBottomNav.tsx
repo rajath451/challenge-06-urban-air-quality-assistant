@@ -28,7 +28,7 @@ interface MobileBottomNavProps {
   onLogout: () => void;
   onOpenPreferences: () => void;
   onOpenCityModal: () => void;
-  currentLocation: LocationInfo;
+  currentLocation: LocationInfo | null;
   readings: EnvironmentalReadings | null;
   isAdmin: boolean;
 }
@@ -229,7 +229,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                 <MapPin className="w-4 h-4 text-emerald-400 shrink-0" />
                 <div className="min-w-0">
                   <p className="text-[10px] text-slate-400 leading-none">Station</p>
-                  <p className="text-xs font-semibold text-white truncate">{currentLocation.name.split(',')[0]}</p>
+                  <p className="text-xs font-semibold text-white truncate">{currentLocation ? currentLocation.name.split(',')[0] : 'Select City'}</p>
                 </div>
               </button>
 

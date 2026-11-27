@@ -15,13 +15,13 @@ import { EnvironmentalReadings, ExposureResponse } from '../types';
 import { calculateExposure } from '../services/api';
 
 interface ExposureProps {
-  readings: EnvironmentalReadings;
+  readings: EnvironmentalReadings | null;
 }
 
 export const Exposure: React.FC<ExposureProps> = ({ readings }) => {
   const [activity, setActivity] = useState<string>('jogging');
   const [duration, setDuration] = useState<number>(45);
-  const [concentration, setConcentration] = useState<number>(readings.pm2_5);
+  const [concentration, setConcentration] = useState<number>(readings ? readings.pm2_5 : 25.0);
   const [weight, setWeight] = useState<number>(68);
   const [isChild, setIsChild] = useState<boolean>(false);
 

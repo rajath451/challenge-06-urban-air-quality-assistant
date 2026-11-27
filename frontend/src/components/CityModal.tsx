@@ -7,7 +7,7 @@ interface CityModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelectCity: (loc: LocationInfo) => void;
-  currentLocation: LocationInfo;
+  currentLocation: LocationInfo | null;
 }
 
 export const CityModal: React.FC<CityModalProps> = ({
@@ -151,7 +151,7 @@ export const CityModal: React.FC<CityModalProps> = ({
                         </span>
                       </div>
                     </div>
-                    {currentLocation.name === loc.name && (
+                    {currentLocation?.name === loc.name && (
                       <Check className="w-4 h-4 text-emerald-700" />
                     )}
                   </button>
@@ -167,7 +167,7 @@ export const CityModal: React.FC<CityModalProps> = ({
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {FEATURED_CITIES.map((loc, idx) => {
-                const isSelected = currentLocation.name === loc.name;
+                const isSelected = currentLocation?.name === loc.name;
 
                 return (
                   <button

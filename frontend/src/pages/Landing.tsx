@@ -21,7 +21,7 @@ import { EnvironmentalReadings, LocationInfo } from '../types';
 
 interface LandingProps {
   readings: EnvironmentalReadings | null;
-  currentLocation: LocationInfo;
+  currentLocation: LocationInfo | null;
   onNavigate: (tab: string) => void;
   onOpenCityModal: () => void;
 }
@@ -32,9 +32,9 @@ export const Landing: React.FC<LandingProps> = ({
   onNavigate,
   onOpenCityModal
 }) => {
-  const naqiVal = readings ? readings.indian_naqi : 43;
-  const naqiCat = readings ? readings.indian_naqi_category : 'Good';
-  const pm25 = readings ? readings.pm2_5 : 25.6;
+  const naqiVal = readings ? readings.indian_naqi : '--';
+  const naqiCat = readings ? readings.indian_naqi_category : 'Unselected';
+  const pm25 = readings ? readings.pm2_5 : '--';
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-slate-50 selection:bg-emerald-600 selection:text-white">
@@ -99,13 +99,13 @@ export const Landing: React.FC<LandingProps> = ({
                   </span>
                   <div className="flex items-center gap-2">
                     <span className="text-base font-bold text-slate-900 font-sans">
-                      {currentLocation.name}
+                      {currentLocation ? currentLocation.name : 'No Station Selected'}
                     </span>
                     <button
                       onClick={onOpenCityModal}
                       className="text-xs text-emerald-700 hover:underline font-medium"
                     >
-                      (Change)
+                      {currentLocation ? '(Change)' : '(Select Station)'}
                     </button>
                   </div>
                 </div>
@@ -313,7 +313,7 @@ export const Landing: React.FC<LandingProps> = ({
             <Wind className="w-4 h-4 text-emerald-700" />
             <span className="font-bold text-slate-800 font-sans">VayuCoach Environmental Intelligence</span>
             <span>•</span>
-            <span>Pan-India Coverage • Live Station: {currentLocation.name.split(',')[0]}</span>
+            <span>Pan-India Coverage • Live Station: {currentLocation ? currentLocation.name.split(',')[0] : 'Unselected'}</span>
           </div>
           <div className="flex items-center gap-4 font-mono text-[11px]">
             <button onClick={() => onNavigate('transparency')} className="hover:underline text-emerald-700">

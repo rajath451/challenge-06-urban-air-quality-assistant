@@ -17,12 +17,12 @@ import { PreferencesModal } from './components/PreferencesModal';
 import { Footer } from './components/Footer';
 import { EnvironmentalReadings, LocationInfo } from './types';
 import { User } from './types/auth';
-import { fetchCurrentEnvironmental, MANGALURU_DEFAULT } from './services/api';
+import { fetchCurrentEnvironmental } from './services/api';
 import { getStoredUser, clearAuthSession, fetchMyProfile } from './services/auth';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
-  const [currentLocation, setCurrentLocation] = useState<LocationInfo>(MANGALURU_DEFAULT);
+  const [currentLocation, setCurrentLocation] = useState<LocationInfo | null>(null);
   const [readings, setReadings] = useState<EnvironmentalReadings | null>(null);
   const [isCityModalOpen, setIsCityModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -74,7 +74,12 @@ export const App: React.FC = () => {
   };
 
   // Load telemetry data for active location
-  const loadEnvironmentalData = useCallback(async (loc: LocationInfo) => {
+  const loadEnvironmentalData = useCallback(async (loc: LocationInfo | null) => {
+    if (!loc) {
+      setReadings(null);
+      setIsLoading(false);
+      return;
+    }
     setIsLoading(true);
     try {
       const data = await fetchCurrentEnvironmental(loc.latitude, loc.longitude, loc.name);
@@ -87,7 +92,11 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    loadEnvironmentalData(currentLocation);
+    if (currentLocation) {
+      loadEnvironmentalData(currentLocation);
+    } else {
+      setIsLoading(false);
+    }
   }, [currentLocation, loadEnvironmentalData]);
 
   const handleSelectCity = (loc: LocationInfo) => {
@@ -138,7 +147,7 @@ export const App: React.FC = () => {
           />
         )}
 
-        {activeTab === 'dashboard' && readings && (
+        {activeTab === 'dashboard' && (
           <Dashboard
             readings={readings}
             currentLocation={currentLocation}
@@ -147,38 +156,41 @@ export const App: React.FC = () => {
           />
         )}
 
-        {activeTab === 'decisions' && readings && (
+        {activeTab === 'decisions' && (
           <Decisions
             readings={readings}
             currentLocation={currentLocation}
             onNavigate={setActiveTab}
+            onOpenCityModal={() => setIsCityModalOpen(true)}
           />
         )}
 
-        {activeTab === 'planner' && readings && (
+        {activeTab === 'planner' && (
           <Planner
             readings={readings}
             currentLocation={currentLocation}
             onNavigate={setActiveTab}
+            onOpenCityModal={() => setIsCityModalOpen(true)}
           />
         )}
 
-        {activeTab === 'homebreath' && readings && (
+        {activeTab === 'homebreath' && (
           <HomeBreath
             readings={readings}
           />
         )}
 
-        {activeTab === 'exposure' && readings && (
+        {activeTab === 'exposure' && (
           <Exposure
             readings={readings}
           />
         )}
 
-        {activeTab === 'assistant' && readings && (
+        {activeTab === 'assistant' && (
           <Assistant
             readings={readings}
             currentLocation={currentLocation}
+            onOpenCityModal={() => setIsCityModalOpen(true)}
           />
         )}
 

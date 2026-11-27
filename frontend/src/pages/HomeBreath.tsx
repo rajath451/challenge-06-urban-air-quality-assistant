@@ -18,7 +18,7 @@ import { EnvironmentalReadings, IndoorSimulationResponse } from '../types';
 import { simulateIndoor } from '../services/api';
 
 interface HomeBreathProps {
-  readings: EnvironmentalReadings;
+  readings: EnvironmentalReadings | null;
 }
 
 export const HomeBreath: React.FC<HomeBreathProps> = ({ readings }) => {
@@ -40,7 +40,7 @@ export const HomeBreath: React.FC<HomeBreathProps> = ({ readings }) => {
       const res = await simulateIndoor({
         room_area_sqft: roomArea,
         ceiling_height_ft: 9.8,
-        outdoor_pm2_5: readings.pm2_5,
+        outdoor_pm2_5: readings ? readings.pm2_5 : 25.0,
         cooking_activity: cookingActivity,
         cooking_duration_minutes: cookingDuration,
         mosquito_coil_count: mosquitoCoils,
@@ -59,7 +59,7 @@ export const HomeBreath: React.FC<HomeBreathProps> = ({ readings }) => {
 
   useEffect(() => {
     runSimulation();
-  }, [roomArea, cookingActivity, cookingDuration, mosquitoCoils, incenseSticks, windowsOpen, exhaustFanOn, purifierCadrm3h, readings.pm2_5]);
+  }, [roomArea, cookingActivity, cookingDuration, mosquitoCoils, incenseSticks, windowsOpen, exhaustFanOn, purifierCadrm3h, readings?.pm2_5]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in">
@@ -98,7 +98,7 @@ export const HomeBreath: React.FC<HomeBreathProps> = ({ readings }) => {
             Household Parameters & Combustion Sources
           </span>
           <span className="text-xs font-mono text-slate-400">
-            Outdoor Baseline: {readings.pm2_5} µg/m³
+            Outdoor Baseline: {readings ? `${readings.pm2_5} µg/m³` : 'Standard Baseline (25 µg/m³)'}
           </span>
         </div>
 
@@ -249,7 +249,7 @@ export const HomeBreath: React.FC<HomeBreathProps> = ({ readings }) => {
               </span>
             </div>
             <div className="pt-2 border-t border-slate-100 text-[11px] font-mono text-slate-500">
-              Outdoor: {readings.pm2_5} µg/m³
+              Outdoor: {readings ? `${readings.pm2_5} µg/m³` : '25.0 µg/m³'}
             </div>
           </div>
 

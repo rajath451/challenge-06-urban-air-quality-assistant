@@ -16,15 +16,17 @@ import { EnvironmentalReadings, LocationInfo, PlannerResponse } from '../types';
 import { fetchPlanner } from '../services/api';
 
 interface PlannerProps {
-  readings: EnvironmentalReadings;
-  currentLocation: LocationInfo;
+  readings: EnvironmentalReadings | null;
+  currentLocation: LocationInfo | null;
   onNavigate: (tab: string) => void;
+  onOpenCityModal: () => void;
 }
 
 export const Planner: React.FC<PlannerProps> = ({
   readings,
   currentLocation,
-  onNavigate
+  onNavigate,
+  onOpenCityModal
 }) => {
   const [activity, setActivity] = useState<string>('exercise');
   const [duration, setDuration] = useState<number>(45);
@@ -34,6 +36,10 @@ export const Planner: React.FC<PlannerProps> = ({
 
   useEffect(() => {
     async function load() {
+      if (!readings || !currentLocation) {
+        setIsLoading(false);
+        return;
+      }
       setIsLoading(true);
       try {
         const res = await fetchPlanner(readings, currentLocation, activity, duration, sensitivity);
@@ -46,6 +52,31 @@ export const Planner: React.FC<PlannerProps> = ({
     }
     load();
   }, [readings, currentLocation, activity, duration, sensitivity]);
+
+  if (!currentLocation || !readings) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-16 sm:py-24 text-center font-sans animate-fade-in">
+        <div className="rounded-3xl bg-white p-8 sm:p-14 border border-slate-200/90 shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-4 border border-emerald-200">
+            <Calendar className="w-8 h-8" />
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-slate-900 mb-3">
+            Select a Monitoring Station
+          </h2>
+          <p className="text-sm sm:text-base text-slate-600 mb-8 max-w-lg mx-auto leading-relaxed">
+            The 24-Hour Best Time Planner models diurnal atmospheric dispersion curves for your specific geographic station.
+          </p>
+          <button
+            onClick={onOpenCityModal}
+            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm shadow-md shadow-emerald-950/20 transition cursor-pointer"
+          >
+            <span>Choose Monitoring Station</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const activityOptions = [
     { id: 'exercise', label: 'Aerobic Exercise / Running' },
