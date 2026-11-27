@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { EnvironmentalReadings, LocationInfo } from '../types';
 import { User } from '../types/auth';
+import { ThemeToggle } from './ThemeToggle';
 
 interface NavbarProps {
   activeTab: string;
@@ -418,6 +419,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-[#0B1320]" />
           </button>
 
+          {/* Theme Toggle Button (Light/Dark Mode) */}
+          <ThemeToggle className="shrink-0" />
+
           {/* User Profile Pill & Pinned SIGN OUT Button (Desktop & Tablet) */}
           <div className="hidden md:block shrink-0">
             {currentUser ? (
@@ -506,6 +510,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
               );
             })}
+          </div>
+
+          {/* Drawer Theme & Mode Row */}
+          <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
+            <span className="text-xs text-slate-400">Display Theme</span>
+            <ThemeToggle showLabel />
           </div>
 
           {/* Drawer Sign Out or Sign In */}

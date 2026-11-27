@@ -13,6 +13,10 @@
     color: #0f172a;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
+  html.dark body {
+    background-color: #0B1320;
+    color: #f1f5f9;
+  }
 }
 
 .tabular-nums {
@@ -27,12 +31,23 @@
   border: 1px solid rgba(226, 232, 240, 0.85);
 }
 
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid rgba(51, 65, 85, 0.7);
+}
+
 .glass-card {
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(241, 245, 249, 0.9);
   box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+}
+
+.dark .glass-card {
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(30, 41, 59, 0.8);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
 }
 
 /* Hide scrollbars cross-browser */

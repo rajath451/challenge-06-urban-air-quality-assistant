@@ -19,8 +19,10 @@ import { EnvironmentalReadings, LocationInfo } from './types';
 import { User } from './types/auth';
 import { fetchCurrentEnvironmental } from './services/api';
 import { getStoredUser, clearAuthSession, fetchMyProfile } from './services/auth';
+import { useTheme } from './hooks/useTheme';
 
 export const App: React.FC = () => {
+  useTheme(); // Initialize theme on document root
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [currentLocation, setCurrentLocation] = useState<LocationInfo | null>(null);
   const [readings, setReadings] = useState<EnvironmentalReadings | null>(null);

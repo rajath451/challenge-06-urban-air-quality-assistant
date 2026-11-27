@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { User } from '../types/auth';
 import { LocationInfo, EnvironmentalReadings } from '../types';
+import { ThemeToggle } from './ThemeToggle';
 
 interface MobileBottomNavProps {
   activeTab: string;
@@ -217,20 +218,18 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               )}
             </div>
 
-            {/* Quick Actions (Location & Alerts) */}
-            <div className="grid grid-cols-2 gap-2 mb-3">
+            {/* Quick Actions (Location, Alerts, Theme) */}
+            <div className="grid grid-cols-3 gap-2 mb-3">
               <button
                 onClick={() => {
                   setIsMoreOpen(false);
                   onOpenCityModal();
                 }}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/50 text-left cursor-pointer transition"
+                className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/50 text-center cursor-pointer transition"
               >
-                <MapPin className="w-4 h-4 text-emerald-400 shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-[10px] text-slate-400 leading-none">Station</p>
-                  <p className="text-xs font-semibold text-white truncate">{currentLocation ? currentLocation.name.split(',')[0] : 'Select City'}</p>
-                </div>
+                <MapPin className="w-4 h-4 text-emerald-400 mb-1 shrink-0" />
+                <span className="text-[10px] text-slate-400 leading-none">Station</span>
+                <span className="text-xs font-semibold text-white truncate max-w-full mt-0.5">{currentLocation ? currentLocation.name.split(',')[0] : 'Select'}</span>
               </button>
 
               <button
@@ -238,14 +237,18 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                   setIsMoreOpen(false);
                   currentUser ? onOpenPreferences() : onOpenAuth();
                 }}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/50 text-left cursor-pointer transition"
+                className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/50 text-center cursor-pointer transition"
               >
-                <Bell className="w-4 h-4 text-emerald-400 shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-[10px] text-slate-400 leading-none">Alerts</p>
-                  <p className="text-xs font-semibold text-white truncate">Preferences</p>
-                </div>
+                <Bell className="w-4 h-4 text-emerald-400 mb-1 shrink-0" />
+                <span className="text-[10px] text-slate-400 leading-none">Alerts</span>
+                <span className="text-xs font-semibold text-white truncate mt-0.5">Preferences</span>
               </button>
+
+              <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-900/60 border border-slate-800 text-center">
+                <ThemeToggle className="p-1 mb-0.5" />
+                <span className="text-[10px] text-slate-400 leading-none">Display</span>
+                <span className="text-[11px] font-semibold text-white mt-0.5">Theme</span>
+              </div>
             </div>
 
             {/* Secondary Navigation List */}
