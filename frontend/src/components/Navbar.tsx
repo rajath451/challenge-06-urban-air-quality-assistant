@@ -388,28 +388,28 @@ export const Navbar: React.FC<NavbarProps> = ({
             </span>
           </div>
 
-          {/* Refresh Feed */}
+          {/* Refresh Feed (Desktop & Tablet) */}
           <button
             onClick={onRefresh}
             disabled={isLoading}
             title="Refresh environmental telemetry"
-            className="p-1.5 rounded-lg bg-slate-900/90 border border-slate-700 text-slate-300 hover:text-emerald-400 hover:border-emerald-400/50 transition-colors disabled:opacity-50 cursor-pointer shrink-0"
+            className="hidden md:flex p-1.5 rounded-lg bg-slate-900/90 border border-slate-700 text-slate-300 hover:text-emerald-400 hover:border-emerald-400/50 transition-colors disabled:opacity-50 cursor-pointer shrink-0"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-emerald-400' : ''}`} />
           </button>
 
-          {/* Email Notification Preferences Trigger */}
+          {/* Email Notification Preferences Trigger (Desktop & Tablet) */}
           <button
             onClick={currentUser ? onOpenPreferences : onOpenAuth}
             title="Email Notification Preferences"
-            className="p-1.5 rounded-lg bg-slate-900/90 border border-slate-700 text-slate-300 hover:text-emerald-400 hover:border-emerald-400/50 transition-colors relative cursor-pointer shrink-0"
+            className="hidden md:flex p-1.5 rounded-lg bg-slate-900/90 border border-slate-700 text-slate-300 hover:text-emerald-400 hover:border-emerald-400/50 transition-colors relative cursor-pointer shrink-0"
           >
             <Bell className="w-3.5 h-3.5" />
             <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-[#0B1320]" />
           </button>
 
-          {/* User Profile Pill & Pinned SIGN OUT Button (shrink-0, Prominently Visible) */}
-          <div className="shrink-0">
+          {/* User Profile Pill & Pinned SIGN OUT Button (Desktop & Tablet) */}
+          <div className="hidden md:block shrink-0">
             {currentUser ? (
               <div className="flex items-center gap-1.5 bg-slate-900/95 pl-2 pr-1.5 py-1 rounded-lg border border-slate-700/90 text-xs shrink-0 shadow-xs">
                 <div className="flex items-center gap-1 max-w-[70px] sm:max-w-[90px] truncate">
@@ -498,18 +498,35 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </div>
 
-          {/* Drawer Sign Out button */}
-          {currentUser && (
+          {/* Drawer Sign Out or Sign In */}
+          {currentUser ? (
             <div className="mt-3 pt-3 border-t border-slate-800 flex items-center justify-between">
               <span className="text-xs text-slate-400">
                 Signed in as <strong className="text-white">{currentUser.name}</strong>
               </span>
               <button
-                onClick={onLogout}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-rose-300 bg-rose-950/60 hover:bg-rose-900 border border-rose-800 transition"
+                onClick={() => {
+                  setMobileDrawerOpen(false);
+                  onLogout();
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-300 bg-rose-950/80 hover:bg-rose-900 border border-rose-800/80 transition cursor-pointer"
               >
                 <LogOut className="w-3.5 h-3.5 text-rose-400" />
                 <span>Sign Out</span>
+              </button>
+            </div>
+          ) : (
+            <div className="mt-3 pt-3 border-t border-slate-800 flex items-center justify-between">
+              <span className="text-xs text-slate-400">Guest Visitor</span>
+              <button
+                onClick={() => {
+                  setMobileDrawerOpen(false);
+                  onOpenAuth();
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-300 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-800/80 transition cursor-pointer"
+              >
+                <UserIcon className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Sign In / Register</span>
               </button>
             </div>
           )}

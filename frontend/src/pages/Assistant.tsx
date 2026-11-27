@@ -11,7 +11,16 @@ import {
   Volume2,
   VolumeX,
   Radio,
-  Headphones
+  Headphones,
+  Copy,
+  Check,
+  RotateCcw,
+  RefreshCw,
+  Trash2,
+  Compass,
+  Wind,
+  ShieldAlert,
+  ArrowRight
 } from 'lucide-react';
 import { EnvironmentalReadings, LocationInfo, ChatMessage } from '../types';
 import { askAssistant } from '../services/api';
@@ -23,29 +32,28 @@ interface AssistantProps {
 
 // Clean formatted markdown renderer for Assistant outputs (no exposed raw markdown symbols)
 const FormattedAssistantMessage: React.FC<{ content: string }> = ({ content }) => {
-  // Normalize bullet symbols (• or ●) to standard markdown unordered list items
   const normalized = content.replace(/^[•●]\s*/gm, '- ');
 
   return (
-    <div className="prose prose-sm max-w-none text-slate-800 text-xs sm:text-sm leading-relaxed space-y-2">
+    <div className="prose prose-sm max-w-none text-slate-800 text-xs sm:text-sm leading-relaxed space-y-2 font-sans">
       <ReactMarkdown
         components={{
           p: ({ children }) => <p className="mb-2 last:mb-0 leading-relaxed text-slate-800 font-normal">{children}</p>,
           strong: ({ children }) => <strong className="font-bold text-slate-900">{children}</strong>,
           em: ({ children }) => <em className="italic text-slate-700">{children}</em>,
-          ul: ({ children }) => <ul className="my-2 space-y-1.5 pl-4 list-disc marker:text-emerald-700">{children}</ul>,
-          ol: ({ children }) => <ol className="my-2 space-y-1.5 pl-4 list-decimal marker:text-emerald-700">{children}</ol>,
+          ul: ({ children }) => <ul className="my-2 space-y-1.5 pl-4 list-disc marker:text-emerald-600">{children}</ul>,
+          ol: ({ children }) => <ol className="my-2 space-y-1.5 pl-4 list-decimal marker:text-emerald-600">{children}</ol>,
           li: ({ children }) => <li className="leading-relaxed pl-1 text-slate-800">{children}</li>,
-          h1: ({ children }) => <h3 className="font-extrabold text-sm sm:text-base text-slate-900 mt-3 mb-1.5">{children}</h3>,
-          h2: ({ children }) => <h4 className="font-bold text-xs sm:text-sm text-slate-900 mt-2.5 mb-1">{children}</h4>,
-          h3: ({ children }) => <h5 className="font-bold text-xs text-slate-900 mt-2 mb-1">{children}</h5>,
+          h1: ({ children }) => <h3 className="font-heading font-extrabold text-sm sm:text-base text-slate-900 mt-3 mb-1.5">{children}</h3>,
+          h2: ({ children }) => <h4 className="font-heading font-bold text-xs sm:text-sm text-slate-900 mt-2.5 mb-1">{children}</h4>,
+          h3: ({ children }) => <h5 className="font-heading font-bold text-xs text-slate-900 mt-2 mb-1">{children}</h5>,
           code: ({ children }) => (
             <code className="px-1.5 py-0.5 rounded-md font-mono text-[11px] bg-emerald-50 text-emerald-900 border border-emerald-200">
               {children}
             </code>
           ),
           blockquote: ({ children }) => (
-            <blockquote className="border-l-3 border-emerald-600 pl-3 my-2 text-slate-600 italic">
+            <blockquote className="border-l-3 border-emerald-600 pl-3 my-2 text-slate-600 italic bg-emerald-50/40 py-1 rounded-r">
               {children}
             </blockquote>
           )
@@ -72,16 +80,17 @@ export const Assistant: React.FC<AssistantProps> = ({
   readings,
   currentLocation
 }) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'welcome',
-      role: 'assistant',
-      content: `Hello! I am your **VayuCoach Environmental Decision Intelligence Copilot** powered by Google Gemini.\n\nI am grounded in live monitoring telemetry for **${currentLocation.name}**:\n- **CPCB Indian NAQI**: **${readings.indian_naqi} (${readings.indian_naqi_category})**\n- **PM2.5**: **${readings.pm2_5} µg/m³**\n- **Coastal Wind**: **${readings.wind_speed} km/h** (${readings.weather_condition})\n\nYou can speak to me using the **Microphone** button or listen to recommendations with the **Audio Readout**!`,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    }
-  ]);
+  const initialWelcomeMsg: ChatMessage = {
+    id: 'welcome',
+    role: 'assistant',
+    content: `Hello! I am your **VayuCoach Environmental Decision Intelligence Copilot** powered by Google Gemini.\n\nI am grounded in live monitoring telemetry for **${currentLocation.name}**:\n- **CPCB Indian NAQI**: **${readings.indian_naqi} (${readings.indian_naqi_category})**\n- **PM2.5**: **${readings.pm2_5} µg/m³**\n- **Atmospheric Wind**: **${readings.wind_speed} km/h** (${readings.weather_condition})\n\nYou can ask me about workout timings, indoor air safety, or speak using the **Microphone**!`,
+    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  };
+
+  const [messages, setMessages] = useState<ChatMessage[]>([initialWelcomeMsg]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [copiedMsgId, setCopiedMsgId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Voice Assistant States
@@ -106,7 +115,6 @@ export const Assistant: React.FC<AssistantProps> = ({
       setVoiceSupported(false);
     }
 
-    // Cancel speech on unmount
     return () => {
       if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
@@ -138,7 +146,6 @@ export const Assistant: React.FC<AssistantProps> = ({
     utterance.rate = 1.0;
     utterance.pitch = 1.0;
 
-    // Pick best Indian English or clear English voice if available
     const voices = window.speechSynthesis.getVoices();
     const preferredVoice =
       voices.find(v => v.lang === 'en-IN' || v.name.includes('India')) ||
@@ -183,7 +190,7 @@ export const Assistant: React.FC<AssistantProps> = ({
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      setSpeechError('Speech recognition is not supported in this browser. Please use Chrome or Edge.');
+      setSpeechError('Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.');
       return;
     }
 
@@ -197,7 +204,6 @@ export const Assistant: React.FC<AssistantProps> = ({
       return;
     }
 
-    // Stop ongoing speech before recording
     stopSpeaking();
 
     try {
@@ -239,12 +245,14 @@ export const Assistant: React.FC<AssistantProps> = ({
     }
   };
 
-  const quickPrompts = [
-    'Should I exercise outdoors right now or postpone?',
-    'Should I open or close my home windows today?',
-    'How does deep frying (tadka) affect my indoor PM2.5?',
-    'Explain the difference between Indian NAQI and US AQI.',
-    'Why is the afternoon breeze cleaner than morning air?'
+  // Section 5.A Suggested Questions
+  const suggestedQuestions = [
+    'Is the air quality safe for outdoor exercise?',
+    'Should I go running today?',
+    'What is causing the current pollution level?',
+    'How can I improve my indoor air quality?',
+    'Explain today\'s PM2.5 reading.',
+    'What precautions should I take today?'
   ];
 
   const handleSend = async (textToSend?: string) => {
@@ -284,7 +292,6 @@ export const Assistant: React.FC<AssistantProps> = ({
 
       setMessages((prev) => [...prev, botMsg]);
 
-      // If Auto Voice Output is enabled, speak out the AI reply
       if (autoVoiceReply) {
         speakText(response.reply, botMsgId);
       }
@@ -302,40 +309,71 @@ export const Assistant: React.FC<AssistantProps> = ({
     }
   };
 
+  const handleCopyMessage = (id: string, content: string) => {
+    navigator.clipboard.writeText(content);
+    setCopiedMsgId(id);
+    setTimeout(() => setCopiedMsgId(null), 2000);
+  };
+
+  const handleClearChat = () => {
+    stopSpeaking();
+    setMessages([initialWelcomeMsg]);
+  };
+
+  const handleRetryLast = () => {
+    const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
+    if (lastUserMsg) {
+      handleSend(lastUserMsg.content);
+    }
+  };
+
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 animate-fade-in flex flex-col h-[calc(100vh-5.5rem)]">
+    <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 animate-fade-in flex flex-col h-[calc(100vh-5.5rem)] font-sans">
       
-      {/* Grounded Telemetry & Voice Control Strip */}
+      {/* Top Header & Environmental Context Strip */}
       <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs mb-3 shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-emerald-800 text-white flex items-center justify-center shadow-xs">
+          <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs shrink-0">
             <Sparkles className="w-5 h-5" />
           </div>
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h2 className="text-sm font-bold text-slate-900 font-sans">
-                VayuCoach Voice & Decision Intelligence
+              <h2 className="text-sm font-heading font-bold text-slate-900 truncate">
+                AI Copilot • Environmental Decision Engine
               </h2>
-              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-100 text-emerald-800">
-                CPCB Grounded
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-100 text-emerald-800 shrink-0">
+                Gemini Powered
               </span>
             </div>
-            <p className="text-[11px] text-slate-500 font-mono">
-              Live Station: {currentLocation.name.split(',')[0]} • NAQI {readings.indian_naqi} • PM2.5: {readings.pm2_5} µg/m³
+            <p className="text-[11px] text-slate-500 font-mono truncate">
+              {currentLocation.name.split(',')[0]} • CPCB NAQI {readings.indian_naqi} ({readings.indian_naqi_category}) • PM2.5: {readings.pm2_5} µg/m³
             </p>
           </div>
         </div>
 
-        {/* Voice Controls: Auto-Speak toggle & Speaking indicator */}
-        <div className="flex items-center gap-2 self-end sm:self-auto">
+        {/* Voice Controls: Status pills & Auto-Speak toggle */}
+        <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+          {/* Animated Audio Waveform (Active when listening or speaking) */}
+          {(isListening || isSpeaking) && (
+            <div className="flex items-center gap-0.5 px-2.5 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 text-xs font-mono">
+              <span className="w-1 h-3 bg-emerald-400 rounded-full animate-bounce" />
+              <span className="w-1 h-4 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.15s]" />
+              <span className="w-1 h-2 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.3s]" />
+              <span className="w-1 h-4 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.2s]" />
+              <span className="text-[10px] font-semibold ml-1">
+                {isListening ? 'Listening' : 'Speaking'}
+              </span>
+            </div>
+          )}
+
           {isSpeaking && (
             <button
               onClick={stopSpeaking}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-red-50 text-red-700 border border-red-200 animate-pulse hover:bg-red-100 transition"
-              title="Stop voice playback"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition cursor-pointer"
+              title="Stop audio readout"
             >
               <VolumeX className="w-3.5 h-3.5" />
-              <span className="font-mono text-[11px]">Stop Audio</span>
+              <span className="font-mono text-[11px]">Stop</span>
             </button>
           )}
 
@@ -344,131 +382,127 @@ export const Assistant: React.FC<AssistantProps> = ({
               setAutoVoiceReply(!autoVoiceReply);
               if (isSpeaking) stopSpeaking();
             }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition cursor-pointer ${
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-medium border transition cursor-pointer ${
               autoVoiceReply
                 ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
                 : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
             }`}
-            title="Automatically read aloud new assistant replies"
+            title="Toggle automatic audio readouts for AI responses"
           >
-            <Headphones className="w-3.5 h-3.5 text-emerald-700" />
-            <span className="text-[11px]">Voice Readout: {autoVoiceReply ? 'ON' : 'OFF'}</span>
+            {autoVoiceReply ? <Volume2 className="w-3.5 h-3.5 text-emerald-600" /> : <VolumeX className="w-3.5 h-3.5 text-slate-400" />}
+            <span className="hidden sm:inline">Voice:</span>
+            <span>{autoVoiceReply ? 'ON' : 'OFF'}</span>
+          </button>
+
+          <button
+            onClick={handleClearChat}
+            title="Reset conversation"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer"
+          >
+            <Trash2 className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* Mic listening alert banner */}
-      {isListening && (
-        <div className="mb-2 p-2.5 rounded-xl bg-emerald-950 text-emerald-200 border border-emerald-700 text-xs flex items-center justify-between animate-pulse">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />
-            <span className="font-mono text-emerald-300">Listening to your voice... Speak now</span>
-          </div>
-          <button
-            onClick={toggleListening}
-            className="px-2 py-0.5 rounded bg-emerald-800 hover:bg-emerald-700 text-white text-[11px] font-medium"
-          >
-            Done Speaking
-          </button>
-        </div>
-      )}
-
+      {/* Speech error banner */}
       {speechError && (
-        <div className="mb-2 p-2 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 text-xs flex items-center justify-between">
+        <div className="mb-2 p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between">
           <span>{speechError}</span>
-          <button onClick={() => setSpeechError(null)} className="text-amber-600 hover:underline text-[11px]">Dismiss</button>
+          <button onClick={() => setSpeechError(null)} className="text-amber-700 font-bold ml-2">Dismiss</button>
         </div>
       )}
 
-      {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto space-y-4 pr-1 sm:pr-2 pb-4">
-        {messages.map((msg) => {
-          const isUser = msg.role === 'user';
-          const isCurrentlySpeakingThis = activeSpeechMsgId === msg.id && isSpeaking;
+      {/* Chat Messages Log */}
+      <div className="flex-1 overflow-y-auto space-y-4 p-3 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs mb-3">
+        {messages.map((message) => {
+          const isUser = message.role === 'user';
+          const isMsgSpeaking = activeSpeechMsgId === message.id && isSpeaking;
 
           return (
             <div
-              key={msg.id}
-              className={`flex items-start gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
+              key={message.id}
+              className={`flex gap-2.5 sm:gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
             >
-              <div
-                className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-xs ${
-                  isUser
-                    ? 'bg-slate-800 text-white'
-                    : 'bg-emerald-800 text-white'
-                }`}
-              >
-                {isUser ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
-              </div>
+              {!isUser && (
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+                  <Bot className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                </div>
+              )}
 
-              <div className="max-w-[85%] sm:max-w-[75%] space-y-1.5">
+              <div className={`max-w-[88%] sm:max-w-[78%] flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
                 <div
-                  className={`p-4 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-xs ${
+                  className={`p-3.5 sm:p-4 rounded-2xl text-xs sm:text-sm shadow-2xs ${
                     isUser
-                      ? 'bg-emerald-800 text-white rounded-tr-xs'
-                      : 'bg-white border border-slate-200/90 text-slate-800 rounded-tl-xs'
+                      ? 'bg-emerald-600 text-white rounded-tr-xs'
+                      : 'bg-slate-50 border border-slate-200/80 rounded-tl-xs text-slate-800'
                   }`}
                 >
                   {isUser ? (
-                    <div className="whitespace-pre-wrap font-sans text-white">
-                      {msg.content}
-                    </div>
+                    <p className="leading-relaxed whitespace-pre-wrap">{message.content}</p>
                   ) : (
-                    <div>
-                      <FormattedAssistantMessage content={msg.content} />
-
-                      {/* Listen to Audio Button for Bot Message */}
-                      <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
-                        <button
-                          type="button"
-                          onClick={() => speakText(msg.content, msg.id)}
-                          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer ${
-                            isCurrentlySpeakingThis
-                              ? 'bg-red-50 text-red-700 border border-red-200'
-                              : 'bg-slate-50 hover:bg-emerald-50 text-slate-600 hover:text-emerald-800 border border-slate-200/80'
-                          }`}
-                        >
-                          {isCurrentlySpeakingThis ? (
-                            <>
-                              <VolumeX className="w-3.5 h-3.5 text-red-600" />
-                              <span>Stop Audio</span>
-                            </>
-                          ) : (
-                            <>
-                              <Volume2 className="w-3.5 h-3.5 text-emerald-700" />
-                              <span>Listen Aloud</span>
-                            </>
-                          )}
-                        </button>
-                        {isCurrentlySpeakingThis && (
-                          <div className="flex items-center gap-1 text-[11px] text-emerald-700 font-mono">
-                            <Radio className="w-3.5 h-3.5 animate-spin" />
-                            <span>Speaking...</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    <FormattedAssistantMessage content={message.content} />
                   )}
                 </div>
 
-                <span className={`text-[10px] font-mono text-slate-400 block ${isUser ? 'text-right' : 'text-left'}`}>
-                  {msg.timestamp}
-                </span>
+                {/* Message Footer Actions */}
+                <div className="flex items-center gap-2 mt-1 px-1 text-[10px] font-mono text-slate-400">
+                  <span>{message.timestamp}</span>
+
+                  {!isUser && (
+                    <>
+                      <span>•</span>
+                      <button
+                        onClick={() => handleCopyMessage(message.id || String(Math.random()), message.content)}
+                        className="hover:text-emerald-700 flex items-center gap-0.5 transition cursor-pointer"
+                        title="Copy response"
+                      >
+                        {copiedMsgId === message.id ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-600" />
+                            <span className="text-emerald-700 font-semibold">Copied</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>Copy</span>
+                          </>
+                        )}
+                      </button>
+
+                      <span>•</span>
+                      <button
+                        onClick={() => speakText(message.content, message.id)}
+                        className={`flex items-center gap-0.5 transition cursor-pointer ${
+                          isMsgSpeaking ? 'text-emerald-600 font-bold' : 'hover:text-emerald-700'
+                        }`}
+                        title={isMsgSpeaking ? 'Stop speaking' : 'Listen aloud'}
+                      >
+                        {isMsgSpeaking ? <VolumeX className="w-3 h-3 animate-pulse" /> : <Volume2 className="w-3 h-3" />}
+                        <span>{isMsgSpeaking ? 'Stop' : 'Listen'}</span>
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
+
+              {isUser && (
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-800 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+                  <User className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                </div>
+              )}
             </div>
           );
         })}
 
+        {/* Typing indicator */}
         {isTyping && (
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-emerald-800 text-white flex items-center justify-center shadow-xs">
+          <div className="flex gap-2.5 sm:gap-3 items-center text-slate-500 text-xs">
+            <div className="w-7 h-7 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
               <Bot className="w-4 h-4" />
             </div>
-            <div className="bg-white border border-slate-200 p-3 rounded-2xl rounded-tl-xs flex items-center gap-1.5 shadow-2xs">
-              <span className="w-2 h-2 rounded-full bg-emerald-700 animate-bounce" />
-              <span className="w-2 h-2 rounded-full bg-emerald-700 animate-bounce [animation-delay:0.2s]" />
-              <span className="w-2 h-2 rounded-full bg-emerald-700 animate-bounce [animation-delay:0.4s]" />
-              <span className="text-xs text-slate-500 font-mono ml-1">Grounded atmospheric reasoning...</span>
+            <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs flex items-center gap-2">
+              <RefreshCw className="w-3.5 h-3.5 text-emerald-600 animate-spin" />
+              <span>Analyzing atmospheric model & generating decision response...</span>
             </div>
           </div>
         )}
@@ -476,79 +510,64 @@ export const Assistant: React.FC<AssistantProps> = ({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Quick Questions Chips */}
-      <div className="py-2 overflow-x-auto flex items-center gap-2 no-scrollbar shrink-0">
-        {quickPrompts.map((q, idx) => (
+      {/* Suggested Questions Carousel (Section 5.A) */}
+      <div className="mb-2 overflow-x-auto no-scrollbar flex items-center gap-1.5 py-1 shrink-0">
+        <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 shrink-0 flex items-center gap-1">
+          <Sparkles className="w-3 h-3 text-emerald-600" />
+          Suggested:
+        </span>
+        {suggestedQuestions.map((promptText, i) => (
           <button
-            key={idx}
-            onClick={() => handleSend(q)}
+            key={i}
+            onClick={() => handleSend(promptText)}
             disabled={isTyping}
-            className="px-3 py-1.5 rounded-full bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-xs text-slate-700 whitespace-nowrap shadow-2xs transition-colors shrink-0 disabled:opacity-50 cursor-pointer"
+            className="px-2.5 py-1 rounded-xl bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 border border-slate-200/90 hover:border-emerald-300 text-[11px] font-medium whitespace-nowrap transition shadow-2xs disabled:opacity-50 cursor-pointer"
           >
-            {q}
+            {promptText}
           </button>
         ))}
       </div>
 
-      {/* Input Field with Microphone & Voice Action */}
-      <div className="pt-2 shrink-0 space-y-2">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSend();
-          }}
-          className="relative flex items-center"
+      {/* Message Composer & Large Mic Button (Keyboard-aware layout) */}
+      <div className="shrink-0 bg-white p-2 sm:p-2.5 rounded-2xl border border-slate-200/90 shadow-sm flex items-center gap-2">
+        {/* Large Accessible Microphone Control (44px) */}
+        <button
+          type="button"
+          onClick={toggleListening}
+          aria-label={isListening ? 'Stop listening' : 'Start voice input'}
+          className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all cursor-pointer shrink-0 ${
+            isListening
+              ? 'bg-rose-600 text-white ring-4 ring-rose-200 animate-pulse scale-105'
+              : 'bg-slate-100 hover:bg-emerald-100 text-slate-700 hover:text-emerald-800 border border-slate-200'
+          }`}
+          title={isListening ? 'Tap to stop recording' : 'Speak with Voice Assistant'}
         >
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={isListening ? "Listening... Speak your air quality question..." : "Ask or speak about exercise, opening windows, coastal breeze, or indoor smoke..."}
-            disabled={isTyping}
-            className={`w-full pl-4 pr-24 py-3 rounded-xl border bg-white text-xs sm:text-sm text-slate-800 placeholder-slate-400 outline-hidden shadow-2xs transition-all ${
-              isListening
-                ? 'border-emerald-600 ring-2 ring-emerald-200 bg-emerald-50/30'
-                : 'border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100'
-            }`}
-          />
-          
-          <div className="absolute right-1.5 flex items-center gap-1.5">
-            {/* Microphone Button */}
-            <button
-              type="button"
-              onClick={toggleListening}
-              disabled={isTyping}
-              className={`p-2 rounded-lg transition-all cursor-pointer ${
-                isListening
-                  ? 'bg-red-600 text-white animate-pulse shadow-md shadow-red-500/30'
-                  : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200'
-              }`}
-              title={isListening ? "Stop listening" : "Speak your question (Voice Input)"}
-            >
-              {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-            </button>
+          {isListening ? <MicOff className="w-5 h-5 text-white" /> : <Mic className="w-5 h-5" />}
+        </button>
 
-            {/* Send Button */}
-            <button
-              type="submit"
-              disabled={!input.trim() || isTyping}
-              className="p-2 rounded-lg bg-emerald-800 hover:bg-emerald-700 text-white disabled:opacity-40 transition-colors shadow-2xs cursor-pointer"
-              title="Send question"
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </div>
-        </form>
+        {/* Text Input */}
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleSend();
+          }}
+          placeholder={isListening ? 'Listening to your voice... Speak now...' : 'Ask about air quality, outdoor running, or room ventilation...'}
+          disabled={isTyping}
+          className="flex-1 bg-transparent px-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-hidden disabled:opacity-50 font-sans"
+        />
 
-        <div className="flex items-center justify-between text-[11px] text-slate-500 px-1 font-sans">
-          <span className="flex items-center gap-1">
-            <Info className="w-3.5 h-3.5 text-slate-400" />
-            <span>Voice-enabled assistant • Speech-to-Text & Text-to-Speech active</span>
-          </span>
-          <span className="font-mono text-slate-400 hidden sm:inline">
-            VayuCoach × Gemini Voice
-          </span>
-        </div>
+        {/* Send Button */}
+        <button
+          type="button"
+          onClick={() => handleSend()}
+          disabled={!input.trim() || isTyping}
+          aria-label="Send message"
+          className="w-10 h-10 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-200 text-white disabled:text-slate-400 flex items-center justify-center transition shadow-xs cursor-pointer shrink-0"
+        >
+          <Send className="w-4 h-4" />
+        </button>
       </div>
 
     </div>

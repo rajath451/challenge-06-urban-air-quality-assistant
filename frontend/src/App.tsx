@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Navbar } from './components/Navbar';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { Landing } from './pages/Landing';
 import { Dashboard } from './pages/Dashboard';
 import { Decisions } from './pages/Decisions';
@@ -20,7 +21,7 @@ import { fetchCurrentEnvironmental, MANGALURU_DEFAULT } from './services/api';
 import { getStoredUser, clearAuthSession, fetchMyProfile } from './services/auth';
 
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>('landing');
+  const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [currentLocation, setCurrentLocation] = useState<LocationInfo>(MANGALURU_DEFAULT);
   const [readings, setReadings] = useState<EnvironmentalReadings | null>(null);
   const [isCityModalOpen, setIsCityModalOpen] = useState(false);
@@ -126,8 +127,8 @@ export const App: React.FC = () => {
         onOpenPreferences={() => setIsPreferencesModalOpen(true)}
       />
 
-      {/* Main View Container */}
-      <main className="flex-1">
+      {/* Main View Container (pb-20 on mobile to clear fixed bottom nav) */}
+      <main className="flex-1 pb-20 md:pb-0">
         {activeTab === 'landing' && (
           <Landing
             readings={readings}
@@ -230,6 +231,20 @@ export const App: React.FC = () => {
       <Footer
         onNavigate={setActiveTab}
         onOpenAuth={() => setShowAuthPage(true)}
+        isAdmin={currentUser?.role === 'admin'}
+      />
+
+      {/* Mobile Bottom Navigation (< 768px) */}
+      <MobileBottomNav
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        currentUser={currentUser}
+        onOpenAuth={() => setShowAuthPage(true)}
+        onLogout={handleLogout}
+        onOpenPreferences={() => setIsPreferencesModalOpen(true)}
+        onOpenCityModal={() => setIsCityModalOpen(true)}
+        currentLocation={currentLocation}
+        readings={readings}
         isAdmin={currentUser?.role === 'admin'}
       />
 

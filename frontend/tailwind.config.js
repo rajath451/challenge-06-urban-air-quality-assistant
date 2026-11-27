@@ -7,33 +7,37 @@ export default {
   theme: {
     extend: {
       colors: {
+        midnight: {
+          900: '#0B1423',
+          800: '#101D30',
+          700: '#182944',
+        },
+        forest: {
+          900: '#064E3B',
+          800: '#065F46',
+          700: '#047857',
+        },
         brand: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
+          50: '#ecfdf5',
+          100: '#d1fae5',
+          200: '#a7f3d0',
+          500: '#10B981',
+          600: '#059669',
+          700: '#047857',
+          800: '#065F46',
+          900: '#064E3B',
         },
         aqi: {
-          good: '#059669',
-          goodBg: '#ecfdf5',
-          moderate: '#0284c7',
-          moderateBg: '#f0f9ff',
-          sensitive: '#f59e0b',
-          sensitiveBg: '#fffbeb',
-          unhealthy: '#ea580c',
-          unhealthyBg: '#fff7ed',
-          veryUnhealthy: '#dc2626',
-          veryUnhealthyBg: '#fef2f2',
-          hazardous: '#991b1b',
-          hazardousBg: '#450a0a',
+          good: '#16A34A',
+          moderate: '#EAB308',
+          poor: '#F97316',
+          veryPoor: '#DC2626',
+          severe: '#7F1D1D',
         }
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        heading: ['Manrope', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       }
     },
