@@ -4,22 +4,11 @@ import {
   Droplets,
   Thermometer,
   Compass,
-  AlertTriangle,
-  CheckCircle2,
   Clock,
-  Sparkles,
   ArrowRight,
-  ShieldCheck,
-  Calendar,
-  Layers,
   Activity,
   MapPin,
-  RefreshCw,
-  Bell,
-  Info,
-  ChevronRight,
-  Eye,
-  Gauge
+  ChevronRight
 } from 'lucide-react';
 import {
   AreaChart,
@@ -29,9 +18,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
-  ReferenceLine,
-  BarChart,
-  Bar
+  ReferenceLine
 } from 'recharts';
 import { EnvironmentalReadings, LocationInfo } from '../types';
 
@@ -49,6 +36,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   onOpenCityModal
 }) => {
   const [timeFilter, setTimeFilter] = useState<'24h' | '7d' | '30d'>('24h');
+  const [renderTimestamp] = useState(() => new Date());
 
   // Empty State: when no location has been selected yet
   if (!currentLocation || !readings) {
@@ -87,7 +75,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
     relative_humidity,
     wind_speed,
     wind_direction,
-    weather_condition,
     data_source,
     data_freshness_minutes
   } = readings;
@@ -218,14 +205,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
     { name: 'Mangalore University / Konaje', aqi: Math.max(12, Math.round(indian_naqi * 0.75)), status: 'Good', distance: '14.2 km South' }
   ];
 
-  const now = new Date();
-  const dateFormatted = now.toLocaleDateString('en-IN', {
+  const dateFormatted = renderTimestamp.toLocaleDateString('en-IN', {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
     year: 'numeric'
   });
-  const timeFormatted = now.toLocaleTimeString('en-IN', {
+  const timeFormatted = renderTimestamp.toLocaleTimeString('en-IN', {
     hour: '2-digit',
     minute: '2-digit'
   });

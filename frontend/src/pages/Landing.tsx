@@ -3,19 +3,9 @@ import {
   Wind,
   Compass,
   Calendar,
-  Activity,
   Sparkles,
-  ShieldCheck,
   ArrowRight,
-  CheckCircle2,
-  Clock,
-  Waves,
-  Cpu,
-  Info,
-  MapPin,
-  TrendingDown,
-  Droplets,
-  Thermometer
+  CheckCircle2
 } from 'lucide-react';
 import { EnvironmentalReadings, LocationInfo } from '../types';
 

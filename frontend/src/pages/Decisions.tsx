@@ -3,16 +3,10 @@ import {
   Compass,
   CheckCircle2,
   AlertTriangle,
-  Info,
-  Clock,
   ShieldAlert,
-  ArrowRight,
-  Sparkles,
-  RefreshCw,
-  Sliders,
-  Check
+  ArrowRight
 } from 'lucide-react';
-import { EnvironmentalReadings, LocationInfo, DecisionItem, DecisionResponse } from '../types';
+import { EnvironmentalReadings, LocationInfo, DecisionResponse } from '../types';
 import { fetchDecisions } from '../services/api';
 
 interface DecisionsProps {

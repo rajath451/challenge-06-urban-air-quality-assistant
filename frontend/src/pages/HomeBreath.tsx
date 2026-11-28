@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Wind,
-  Flame,
-  AlertTriangle,
-  Info,
-  Sliders,
-  Sparkles,
-  TrendingDown,
-  Clock,
-  ShieldCheck,
-  CheckCircle2,
-  RefreshCw,
-  Home
+  AlertTriangle
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ReferenceLine } from 'recharts';
 import { EnvironmentalReadings, IndoorSimulationResponse } from '../types';
@@ -29,37 +19,36 @@ export const HomeBreath: React.FC<HomeBreathProps> = ({ readings }) => {
   const [incenseSticks, setIncenseSticks] = useState<number>(0);
   const [windowsOpen, setWindowsOpen] = useState<boolean>(false);
   const [exhaustFanOn, setExhaustFanOn] = useState<boolean>(false);
-  const [purifierCadrm3h, setPurifierCadrm3h] = useState<number>(0);
+  const [purifierCadrm3h] = useState<number>(0);
 
   const [simResult, setSimResult] = useState<IndoorSimulationResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const runSimulation = async () => {
-    setIsLoading(true);
-    try {
-      const res = await simulateIndoor({
-        room_area_sqft: roomArea,
-        ceiling_height_ft: 9.8,
-        outdoor_pm2_5: readings ? readings.pm2_5 : 25.0,
-        cooking_activity: cookingActivity,
-        cooking_duration_minutes: cookingDuration,
-        mosquito_coil_count: mosquitoCoils,
-        incense_sticks_count: incenseSticks,
-        windows_open: windowsOpen,
-        exhaust_fan_on: exhaustFanOn,
-        air_purifier_cadrm3h: purifierCadrm3h
-      });
-      setSimResult(res);
-    } catch (err) {
-      console.error('Simulation error:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   useEffect(() => {
-    runSimulation();
-  }, [roomArea, cookingActivity, cookingDuration, mosquitoCoils, incenseSticks, windowsOpen, exhaustFanOn, purifierCadrm3h, readings?.pm2_5]);
+    let cancelled = false;
+    async function run() {
+      try {
+        const res = await simulateIndoor({
+          room_area_sqft: roomArea,
+          ceiling_height_ft: 9.8,
+          outdoor_pm2_5: readings ? readings.pm2_5 : 25.0,
+          cooking_activity: cookingActivity,
+          cooking_duration_minutes: cookingDuration,
+          mosquito_coil_count: mosquitoCoils,
+          incense_sticks_count: incenseSticks,
+          windows_open: windowsOpen,
+          exhaust_fan_on: exhaustFanOn,
+          air_purifier_cadrm3h: purifierCadrm3h
+        });
+        if (!cancelled) setSimResult(res);
+      } catch (err) {
+        console.error('Simulation error:', err);
+      }
+    }
+    void run();
+    return () => {
+      cancelled = true;
+    };
+  }, [roomArea, cookingActivity, cookingDuration, mosquitoCoils, incenseSticks, windowsOpen, exhaustFanOn, purifierCadrm3h, readings]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in">

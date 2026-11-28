@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, MapPin, X, Navigation, Building2, Check, Radio } from 'lucide-react';
+import { Search, MapPin, X, Navigation, Building2, Check } from 'lucide-react';
 import { LocationInfo } from '../types';
 import { FEATURED_CITIES, searchCities } from '../services/api';
 
@@ -66,7 +66,12 @@ export const CityModal: React.FC<CityModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Select Environmental Monitoring Station"
+    >
       <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[85vh]">
         
         {/* Header */}
@@ -83,7 +88,9 @@ export const CityModal: React.FC<CityModalProps> = ({
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
+            aria-label="Close station selector"
             className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
           >
             <X className="w-5 h-5" />

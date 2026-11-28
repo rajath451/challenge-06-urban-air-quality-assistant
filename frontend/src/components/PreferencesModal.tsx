@@ -2,13 +2,11 @@ import React, { useState, useEffect } from 'react';
 import {
   X,
   Bell,
-  Mail,
   Clock,
   MapPin,
   CheckCircle2,
   AlertCircle,
   ShieldCheck,
-  Send,
   History,
   Sliders
 } from 'lucide-react';
@@ -16,9 +14,9 @@ import {
   fetchNotificationPreferences,
   updateNotificationPreferences,
   fetchMyDeliveryLogs,
-  NotificationPreferences,
   EmailDeliveryLog
 } from '../services/notifications';
+import { getErrorMessage } from '../utils/errors';
 
 interface PreferencesModalProps {
   isOpen: boolean;
@@ -32,9 +30,7 @@ export const PreferencesModal: React.FC<PreferencesModalProps> = ({
   userEmail
 }) => {
   const [activeTab, setActiveTab] = useState<'settings' | 'logs'>('settings');
-  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [prefs, setPrefs] = useState<NotificationPreferences | null>(null);
   const [logs, setLogs] = useState<EmailDeliveryLog[]>([]);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -50,30 +46,30 @@ export const PreferencesModal: React.FC<PreferencesModalProps> = ({
   const [location, setLocation] = useState('Mangaluru, Karnataka, India');
 
   useEffect(() => {
-    if (isOpen) {
-      loadPreferences();
+    if (!isOpen) return;
+    let cancelled = false;
+    async function load() {
+      try {
+        const p = await fetchNotificationPreferences();
+        if (cancelled) return;
+        setEnabled(p.email_notifications_enabled);
+        setCategories(p.categories || []);
+        setReportTime(p.preferred_report_time || '07:00');
+        setLocation(p.preferred_location || 'Mangaluru, Karnataka, India');
+
+        const myLogs = await fetchMyDeliveryLogs();
+        if (!cancelled) setLogs(myLogs);
+      } catch (err: unknown) {
+        if (!cancelled) {
+          setFeedback({ type: 'error', text: getErrorMessage(err, 'Please log in to manage notification preferences.') });
+        }
+      }
     }
+    void load();
+    return () => {
+      cancelled = true;
+    };
   }, [isOpen]);
-
-  const loadPreferences = async () => {
-    setLoading(true);
-    setFeedback(null);
-    try {
-      const p = await fetchNotificationPreferences();
-      setPrefs(p);
-      setEnabled(p.email_notifications_enabled);
-      setCategories(p.categories || []);
-      setReportTime(p.preferred_report_time || '07:00');
-      setLocation(p.preferred_location || 'Mangaluru, Karnataka, India');
-
-      const myLogs = await fetchMyDeliveryLogs();
-      setLogs(myLogs);
-    } catch (err: any) {
-      setFeedback({ type: 'error', text: err.message || 'Please log in to manage notification preferences.' });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleToggleCategory = (cat: string) => {
     setCategories((prev) =>
@@ -86,16 +82,15 @@ export const PreferencesModal: React.FC<PreferencesModalProps> = ({
     setSaving(true);
     setFeedback(null);
     try {
-      const updated = await updateNotificationPreferences({
+      await updateNotificationPreferences({
         email_notifications_enabled: enabled,
         categories,
         preferred_report_time: reportTime,
         preferred_location: location
       });
-      setPrefs(updated);
       setFeedback({ type: 'success', text: 'Notification preferences synchronized successfully.' });
-    } catch (err: any) {
-      setFeedback({ type: 'error', text: err.message || 'Failed to save preferences.' });
+    } catch (err: unknown) {
+      setFeedback({ type: 'error', text: getErrorMessage(err, 'Failed to save preferences.') });
     } finally {
       setSaving(false);
     }
@@ -104,7 +99,12 @@ export const PreferencesModal: React.FC<PreferencesModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fadeIn">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fadeIn"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Notification preferences"
+    >
       <div className="relative w-full max-w-xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
         {/* Header decoration */}
         <div className="h-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" />
@@ -112,9 +112,10 @@ export const PreferencesModal: React.FC<PreferencesModalProps> = ({
         <div className="p-6">
           {/* Close button */}
           <button
+            type="button"
             onClick={onClose}
             className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-            aria-label="Close"
+            aria-label="Close notification preferences"
           >
             <X className="w-5 h-5" />
           </button>

@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Activity as ActivityIcon,
-  Clock,
-  Sparkles,
-  TrendingDown,
-  ShieldCheck,
-  AlertTriangle,
-  Info,
-  Scale,
-  HeartPulse,
-  User
+  AlertTriangle
 } from 'lucide-react';
 import { EnvironmentalReadings, ExposureResponse } from '../types';
 import { calculateExposure } from '../services/api';
@@ -26,11 +18,9 @@ export const Exposure: React.FC<ExposureProps> = ({ readings }) => {
   const [isChild, setIsChild] = useState<boolean>(false);
 
   const [result, setResult] = useState<ExposureResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
-      setIsLoading(true);
       try {
         const res = await calculateExposure({
           activity,
@@ -42,8 +32,6 @@ export const Exposure: React.FC<ExposureProps> = ({ readings }) => {
         setResult(res);
       } catch (err) {
         console.error('Exposure calc error:', err);
-      } finally {
-        setIsLoading(false);
       }
     }
     load();

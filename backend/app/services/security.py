@@ -33,7 +33,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     try:
         pwd_bytes = plain_password.encode("utf-8")[:72]
         return bcrypt.checkpw(pwd_bytes, hashed_password.encode("utf-8"))
-    except Exception:
+    except (ValueError, TypeError):
         return False
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
@@ -137,9 +137,8 @@ async def get_current_user_optional(auth: Optional[HTTPAuthorizationCredentials]
         email = payload.get("sub")
         if email and email in USERS_DB:
             return USERS_DB[email]
-    except Exception:
-        pass
-    return None
+    except HTTPException:
+        return None
 
 async def get_current_user(auth: Optional[HTTPAuthorizationCredentials] = Security(security_bearer)) -> Dict[str, Any]:
     if not auth or not auth.credentials:

@@ -401,8 +401,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Refresh Feed (Desktop & Tablet) */}
           <button
+            type="button"
             onClick={onRefresh}
             disabled={isLoading}
+            aria-label="Refresh environmental telemetry"
             title="Refresh environmental telemetry"
             className="hidden md:flex p-1.5 rounded-lg bg-slate-900/90 border border-slate-700 text-slate-300 hover:text-emerald-400 hover:border-emerald-400/50 transition-colors disabled:opacity-50 cursor-pointer shrink-0"
           >
@@ -411,7 +413,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Email Notification Preferences Trigger (Desktop & Tablet) */}
           <button
+            type="button"
             onClick={currentUser ? onOpenPreferences : onOpenAuth}
+            aria-label="Email notification preferences"
             title="Email Notification Preferences"
             className="hidden md:flex p-1.5 rounded-lg bg-slate-900/90 border border-slate-700 text-slate-300 hover:text-emerald-400 hover:border-emerald-400/50 transition-colors relative cursor-pointer shrink-0"
           >

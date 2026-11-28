@@ -1,4 +1,5 @@
-import { createClient, SupabaseClient, User as SupabaseUser } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { getErrorMessage } from '../utils/errors';
 
 // Load Supabase environment variables from Vite or Next.js conventions
 const supabaseUrl =
@@ -82,8 +83,8 @@ export async function signUpWithSupabase(
     }
 
     return { success: false, error: 'Sign up failed.' };
-  } catch (err: any) {
-    return { success: false, error: err.message || 'Unexpected Supabase error.' };
+  } catch (err: unknown) {
+    return { success: false, error: getErrorMessage(err, 'Unexpected Supabase error.') };
   }
 }
 
@@ -121,8 +122,8 @@ export async function signInWithSupabase(
     }
 
     return { success: false, error: 'Sign in failed.' };
-  } catch (err: any) {
-    return { success: false, error: err.message || 'Unexpected Supabase error.' };
+  } catch (err: unknown) {
+    return { success: false, error: getErrorMessage(err, 'Unexpected Supabase error.') };
   }
 }
 
@@ -151,7 +152,7 @@ export async function resetPasswordWithSupabase(email: string): Promise<{ succes
     }
 
     return { success: true, message: 'Password reset link dispatched via Supabase.' };
-  } catch (err: any) {
-    return { success: false, message: err.message || 'Password reset request failed.' };
+  } catch (err: unknown) {
+    return { success: false, message: getErrorMessage(err, 'Password reset request failed.') };
   }
 }

@@ -27,13 +27,27 @@ export const App: React.FC = () => {
   const [currentLocation, setCurrentLocation] = useState<LocationInfo | null>(null);
   const [readings, setReadings] = useState<EnvironmentalReadings | null>(null);
   const [isCityModalOpen, setIsCityModalOpen] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isPreferencesModalOpen, setIsPreferencesModalOpen] = useState(false);
-  const [authModalTab, setAuthModalTab] = useState<'login' | 'register' | 'forgot_password' | 'verify_email'>('login');
-  const [authInitialToken, setAuthInitialToken] = useState('');
+  const [isPreferencesModalOpen, setIsPreferencesModalOpen] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return !params.get('verify_token') && !params.get('reset_token') && params.get('tab') === 'preferences';
+  });
+  const [authModalTab, setAuthModalTab] = useState<'login' | 'register' | 'forgot_password' | 'verify_email'>(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('verify_token')) return 'verify_email';
+    if (params.get('reset_token')) return 'forgot_password';
+    return 'login';
+  });
+  const [authInitialToken, setAuthInitialToken] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('verify_token') || params.get('reset_token') || '';
+  });
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return Boolean(params.get('verify_token') || params.get('reset_token'));
+  });
   const [currentUser, setCurrentUser] = useState<User | null>(getStoredUser());
   const [showAuthPage, setShowAuthPage] = useState<boolean>(() => !getStoredUser());
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Sync / refresh session with backend profile on mount
   useEffect(() => {
@@ -41,29 +55,11 @@ export const App: React.FC = () => {
       try {
         const profile = await fetchMyProfile();
         setCurrentUser(profile);
-      } catch (err) {
+      } catch {
         // Token invalid or expired; keep whatever is stored or cleared
       }
     };
-    verifyUser();
-
-    // Check for email verification or password reset query parameters
-    const params = new URLSearchParams(window.location.search);
-    const verifyToken = params.get('verify_token');
-    const resetToken = params.get('reset_token');
-    const openPrefs = params.get('tab') === 'preferences';
-
-    if (verifyToken) {
-      setAuthModalTab('verify_email');
-      setAuthInitialToken(verifyToken);
-      setIsAuthModalOpen(true);
-    } else if (resetToken) {
-      setAuthModalTab('forgot_password');
-      setAuthInitialToken(resetToken);
-      setIsAuthModalOpen(true);
-    } else if (openPrefs) {
-      setIsPreferencesModalOpen(true);
-    }
+    void verifyUser();
   }, []);
 
   const handleLogout = () => {
@@ -94,12 +90,19 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (currentLocation) {
-      loadEnvironmentalData(currentLocation);
-    } else {
-      setIsLoading(false);
-    }
-  }, [currentLocation, loadEnvironmentalData]);
+    if (!currentLocation) return;
+    let cancelled = false;
+    fetchCurrentEnvironmental(currentLocation.latitude, currentLocation.longitude, currentLocation.name)
+      .then((data) => {
+        if (!cancelled) setReadings(data);
+      })
+      .catch((err) => {
+        console.error('Error fetching environmental readings:', err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [currentLocation]);
 
   const handleSelectCity = (loc: LocationInfo) => {
     setCurrentLocation(loc);

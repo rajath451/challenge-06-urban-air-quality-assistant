@@ -1,4 +1,5 @@
 import { User, AuthResponse, AdminStats, AuditLogEntry, UserSensitivityProfile } from '../types/auth';
+import { getErrorMessage } from '../utils/errors';
 
 const RAW_API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000';
 export const API_BASE = RAW_API_BASE.replace(/\/+$/, '').replace(/\/api$/, '');
@@ -89,9 +90,10 @@ export async function loginUser(email: string, password: string): Promise<AuthRe
     }
     const errData = await res.json().catch(() => ({}));
     throw new Error(errData.detail || 'Invalid email or password.');
-  } catch (err: any) {
-    if (err.message && !err.message.includes('fetch')) {
-      throw err;
+  } catch (err: unknown) {
+    const msg = getErrorMessage(err, '');
+    if (msg && !msg.includes('fetch')) {
+      throw err instanceof Error ? err : new Error(msg);
     }
     throw new Error('Invalid email or password.');
   }

@@ -5,25 +5,62 @@ import {
   Send,
   Bot,
   User,
-  Info,
   Mic,
   MicOff,
   Volume2,
   VolumeX,
-  Radio,
-  Headphones,
   Copy,
   Check,
-  RotateCcw,
   RefreshCw,
-  Trash2,
-  Compass,
-  Wind,
-  ShieldAlert,
-  ArrowRight
+  Trash2
 } from 'lucide-react';
 import { EnvironmentalReadings, LocationInfo, ChatMessage } from '../types';
 import { askAssistant } from '../services/api';
+
+interface SpeechRecognitionResultAlternativeLike {
+  transcript: string;
+}
+
+interface SpeechRecognitionResultLike {
+  readonly length: number;
+  [index: number]: SpeechRecognitionResultAlternativeLike;
+}
+
+interface SpeechRecognitionEventLike {
+  readonly results: {
+    readonly length: number;
+    [index: number]: SpeechRecognitionResultLike;
+  };
+}
+
+interface SpeechRecognitionErrorEventLike {
+  error: string;
+}
+
+interface SpeechRecognitionInstance {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onstart: (() => void) | null;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEventLike) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+  abort: () => void;
+}
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
+
+interface WindowWithSpeechRecognition extends Window {
+  SpeechRecognition?: SpeechRecognitionConstructor;
+  webkitSpeechRecognition?: SpeechRecognitionConstructor;
+}
+
+function getSpeechRecognitionConstructor(): SpeechRecognitionConstructor | undefined {
+  const win = window as WindowWithSpeechRecognition;
+  return win.SpeechRecognition || win.webkitSpeechRecognition;
+}
 
 interface AssistantProps {
   readings: EnvironmentalReadings | null;
@@ -77,12 +114,11 @@ function cleanMarkdownForSpeech(text: string): string {
     .trim();
 }
 
-export const Assistant: React.FC<AssistantProps> = ({
-  readings,
-  currentLocation,
-  onOpenCityModal
-}) => {
-  const initialWelcomeMsg: ChatMessage = {
+function buildWelcomeMessage(
+  currentLocation: LocationInfo | null,
+  readings: EnvironmentalReadings | null
+): ChatMessage {
+  return {
     id: 'welcome',
     role: 'assistant',
     content: currentLocation && readings
@@ -90,8 +126,15 @@ export const Assistant: React.FC<AssistantProps> = ({
       : `Hello! I am your **VayuCoach Environmental Decision Intelligence Copilot** powered by Google Gemini.\n\nNo monitoring station has been selected yet. Please select an active monitoring station so I can calibrate my advice with real-time CPCB telemetry!`,
     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   };
+}
 
-  const [messages, setMessages] = useState<ChatMessage[]>([initialWelcomeMsg]);
+export const Assistant: React.FC<AssistantProps> = ({
+  readings,
+  currentLocation
+}) => {
+  const [messages, setMessages] = useState<ChatMessage[]>(() => [
+    buildWelcomeMessage(currentLocation, readings)
+  ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [copiedMsgId, setCopiedMsgId] = useState<string | null>(null);
@@ -102,23 +145,16 @@ export const Assistant: React.FC<AssistantProps> = ({
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [activeSpeechMsgId, setActiveSpeechMsgId] = useState<string | null>(null);
   const [autoVoiceReply, setAutoVoiceReply] = useState(true);
-  const [voiceSupported, setVoiceSupported] = useState(true);
   const [speechError, setSpeechError] = useState<string | null>(null);
 
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  // Check speech synthesis & recognition capability
+  // Cleanup speech synthesis & recognition on unmount
   useEffect(() => {
-    const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition && !window.speechSynthesis) {
-      setVoiceSupported(false);
-    }
-
     return () => {
       if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
@@ -126,7 +162,9 @@ export const Assistant: React.FC<AssistantProps> = ({
       if (recognitionRef.current) {
         try {
           recognitionRef.current.abort();
-        } catch {}
+        } catch {
+          // Ignore abort errors during unmount cleanup
+        }
       }
     };
   }, []);
@@ -190,8 +228,7 @@ export const Assistant: React.FC<AssistantProps> = ({
   const toggleListening = () => {
     setSpeechError(null);
 
-    const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition = getSpeechRecognitionConstructor();
 
     if (!SpeechRecognition) {
       setSpeechError('Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.');
@@ -202,7 +239,9 @@ export const Assistant: React.FC<AssistantProps> = ({
       if (recognitionRef.current) {
         try {
           recognitionRef.current.stop();
-        } catch {}
+        } catch {
+          // Ignore stop errors
+        }
       }
       setIsListening(false);
       return;
@@ -220,7 +259,7 @@ export const Assistant: React.FC<AssistantProps> = ({
         setIsListening(true);
       };
 
-      recognition.onresult = (event: any) => {
+      recognition.onresult = (event: SpeechRecognitionEventLike) => {
         let transcript = '';
         for (let i = 0; i < event.results.length; i++) {
           transcript += event.results[i][0].transcript;
@@ -228,7 +267,7 @@ export const Assistant: React.FC<AssistantProps> = ({
         setInput(transcript);
       };
 
-      recognition.onerror = (event: any) => {
+      recognition.onerror = (event: SpeechRecognitionErrorEventLike) => {
         console.warn('Speech recognition error:', event.error);
         if (event.error !== 'no-speech') {
           setSpeechError(`Microphone issue: ${event.error}`);
@@ -242,7 +281,7 @@ export const Assistant: React.FC<AssistantProps> = ({
 
       recognitionRef.current = recognition;
       recognition.start();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Speech initialization error:', err);
       setSpeechError('Could not access microphone. Please grant browser microphone permission.');
       setIsListening(false);
@@ -321,14 +360,7 @@ export const Assistant: React.FC<AssistantProps> = ({
 
   const handleClearChat = () => {
     stopSpeaking();
-    setMessages([initialWelcomeMsg]);
-  };
-
-  const handleRetryLast = () => {
-    const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
-    if (lastUserMsg) {
-      handleSend(lastUserMsg.content);
-    }
+    setMessages([buildWelcomeMessage(currentLocation, readings)]);
   };
 
   return (
@@ -384,10 +416,13 @@ export const Assistant: React.FC<AssistantProps> = ({
           )}
 
           <button
+            type="button"
             onClick={() => {
               setAutoVoiceReply(!autoVoiceReply);
               if (isSpeaking) stopSpeaking();
             }}
+            aria-pressed={autoVoiceReply}
+            aria-label="Toggle automatic audio readouts for AI responses"
             className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-medium border transition cursor-pointer ${
               autoVoiceReply
                 ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
@@ -401,7 +436,9 @@ export const Assistant: React.FC<AssistantProps> = ({
           </button>
 
           <button
+            type="button"
             onClick={handleClearChat}
+            aria-label="Reset conversation"
             title="Reset conversation"
             className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer"
           >
@@ -554,6 +591,7 @@ export const Assistant: React.FC<AssistantProps> = ({
         {/* Text Input */}
         <input
           type="text"
+          aria-label="Ask AI Copilot"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {

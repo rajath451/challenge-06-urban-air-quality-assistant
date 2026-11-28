@@ -7,7 +7,6 @@ import {
   Shield,
   AlertCircle,
   CheckCircle,
-  Sparkles,
   KeyRound
 } from 'lucide-react';
 import { loginUser, registerUser, saveAuthSession } from '../services/auth';
@@ -16,7 +15,8 @@ import {
   submitPasswordReset,
   verifyEmailToken
 } from '../services/notifications';
-import { User, DEFAULT_SENSITIVITY_PROFILE } from '../types/auth';
+import { User } from '../types/auth';
+import { getErrorMessage } from '../utils/errors';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -87,22 +87,28 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           setTab('login');
         }, 1200);
       }
-    } catch (err: any) {
-      setError(err.message || 'Operation failed. Please check your credentials or token.');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, 'Operation failed. Please check your credentials or token.'));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Account authentication"
+    >
       <div className="relative w-full max-w-md bg-[#0F172A] border border-slate-800 rounded-2xl shadow-2xl p-6 border-t-2 border-t-emerald-500 overflow-hidden text-slate-100">
         
         {/* Close button */}
         <button
+          type="button"
           onClick={onClose}
           className="absolute top-5 right-5 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
-          aria-label="Close"
+          aria-label="Close authentication modal"
         >
           <X className="w-5 h-5" />
         </button>

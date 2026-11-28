@@ -43,7 +43,6 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   onOpenPreferences,
   onOpenCityModal,
   currentLocation,
-  readings,
   isAdmin
 }) => {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
@@ -110,8 +109,10 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
             const isActive = activeTab === tab.id;
             return (
               <button
+                type="button"
                 key={tab.id}
                 onClick={() => handleSelectTab(tab.id)}
+                aria-current={isActive ? 'page' : undefined}
                 className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl transition-all cursor-pointer relative ${
                   isActive
                     ? 'text-emerald-400 font-semibold'
@@ -133,7 +134,10 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
 
           {/* 5th Tab: "More" */}
           <button
+            type="button"
             onClick={() => setIsMoreOpen(prev => !prev)}
+            aria-expanded={isMoreOpen}
+            aria-label="More navigation options"
             className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl transition-all cursor-pointer relative ${
               isMoreActive || isMoreOpen
                 ? 'text-emerald-400 font-semibold'
@@ -155,7 +159,12 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
 
       {/* "More" Bottom Sheet Modal (< 768px) */}
       {isMoreOpen && (
-        <div className="md:hidden fixed inset-0 z-50 flex flex-col justify-end">
+        <div
+          className="md:hidden fixed inset-0 z-50 flex flex-col justify-end"
+          role="dialog"
+          aria-modal="true"
+          aria-label="More modules and actions"
+        >
           {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/70 backdrop-blur-xs transition-opacity"
@@ -173,7 +182,9 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                 <span className="font-heading text-sm font-bold text-white">More Modules & Actions</span>
               </div>
               <button
+                type="button"
                 onClick={() => setIsMoreOpen(false)}
+                aria-label="Close navigation menu"
                 className="p-1 rounded-lg text-slate-400 hover:text-white bg-slate-800/80"
               >
                 <X className="w-4 h-4" />
@@ -235,7 +246,11 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               <button
                 onClick={() => {
                   setIsMoreOpen(false);
-                  currentUser ? onOpenPreferences() : onOpenAuth();
+                  if (currentUser) {
+                    onOpenPreferences();
+                  } else {
+                    onOpenAuth();
+                  }
                 }}
                 className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/50 text-center cursor-pointer transition"
               >

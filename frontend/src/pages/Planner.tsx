@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   Calendar,
-  Clock,
-  Sparkles,
   CheckCircle2,
-  AlertTriangle,
-  Compass,
-  ArrowRight,
-  ShieldCheck,
-  Sun,
-  Flame
+  ArrowRight
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { EnvironmentalReadings, LocationInfo, PlannerResponse } from '../types';
@@ -18,36 +11,30 @@ import { fetchPlanner } from '../services/api';
 interface PlannerProps {
   readings: EnvironmentalReadings | null;
   currentLocation: LocationInfo | null;
-  onNavigate: (tab: string) => void;
+  onNavigate?: (tab: string) => void;
   onOpenCityModal: () => void;
 }
 
 export const Planner: React.FC<PlannerProps> = ({
   readings,
   currentLocation,
-  onNavigate,
   onOpenCityModal
 }) => {
   const [activity, setActivity] = useState<string>('exercise');
   const [duration, setDuration] = useState<number>(45);
   const [sensitivity, setSensitivity] = useState<string>('normal');
   const [plan, setPlan] = useState<PlannerResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       if (!readings || !currentLocation) {
-        setIsLoading(false);
         return;
       }
-      setIsLoading(true);
       try {
         const res = await fetchPlanner(readings, currentLocation, activity, duration, sensitivity);
         setPlan(res);
       } catch (err) {
         console.error('Planner load error:', err);
-      } finally {
-        setIsLoading(false);
       }
     }
     load();

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   ShieldAlert,
   Sliders,
   BellRing,
   FileText,
-  Activity,
   Users,
   CheckCircle2,
   AlertTriangle,
@@ -14,9 +13,9 @@ import {
   Mail,
   Send,
   Server,
-  Zap,
-  CheckCheck
+  Zap
 } from 'lucide-react';
+import { getErrorMessage } from '../utils/errors';
 import { User, AdminStats, AuditLogEntry } from '../types/auth';
 import {
   fetchAdminOverview,
@@ -69,7 +68,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentUser, onO
 
   const isAdmin = currentUser?.role === 'admin';
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     if (!isAdmin) return;
     setLoading(true);
     try {
@@ -84,17 +83,40 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentUser, onO
       setAuditLogs(logsData);
       setSmtpStatus(smtpData);
       setEmailLogs(emailsData);
-    } catch (err: any) {
-      setFeedbackMsg({ type: 'error', text: err.message || 'Failed to load administrator telemetry.' });
+    } catch (err: unknown) {
+      setFeedbackMsg({ type: 'error', text: getErrorMessage(err, 'Failed to load administrator telemetry.') });
     } finally {
       setLoading(false);
     }
-  };
+  }, [isAdmin]);
 
   useEffect(() => {
-    if (isAdmin) {
-      loadData();
+    if (!isAdmin) return;
+    let cancelled = false;
+    async function initAdmin() {
+      try {
+        const [overviewData, logsData, smtpData, emailsData] = await Promise.all([
+          fetchAdminOverview(),
+          fetchAdminAuditLogs(),
+          fetchSmtpStatus(),
+          fetchAllEmailLogs()
+        ]);
+        if (cancelled) return;
+        setStats(overviewData);
+        setEmergencyLockdown(overviewData.emergency_advisory_active);
+        setAuditLogs(logsData);
+        setSmtpStatus(smtpData);
+        setEmailLogs(emailsData);
+      } catch (err: unknown) {
+        if (!cancelled) {
+          setFeedbackMsg({ type: 'error', text: getErrorMessage(err, 'Failed to load administrator telemetry.') });
+        }
+      }
     }
+    void initAdmin();
+    return () => {
+      cancelled = true;
+    };
   }, [isAdmin]);
 
   const handleSaveThresholds = async (e: React.FormEvent) => {
@@ -111,8 +133,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentUser, onO
       setFeedbackMsg({ type: 'success', text: 'CPCB decision thresholds updated and engine re-calibrated.' });
       const logs = await fetchAdminAuditLogs();
       setAuditLogs(logs);
-    } catch (err: any) {
-      setFeedbackMsg({ type: 'error', text: err.message || 'Failed to update thresholds.' });
+    } catch (err: unknown) {
+      setFeedbackMsg({ type: 'error', text: getErrorMessage(err, 'Failed to update thresholds.') });
     } finally {
       setUpdatingThresholds(false);
     }
@@ -135,8 +157,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentUser, onO
       setAdvisoryMessage('');
       const logs = await fetchAdminAuditLogs();
       setAuditLogs(logs);
-    } catch (err: any) {
-      setFeedbackMsg({ type: 'error', text: err.message || 'Failed to broadcast advisory.' });
+    } catch (err: unknown) {
+      setFeedbackMsg({ type: 'error', text: getErrorMessage(err, 'Failed to broadcast advisory.') });
     } finally {
       setBroadcasting(false);
     }
@@ -153,8 +175,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentUser, onO
       const [emails, logs] = await Promise.all([fetchAllEmailLogs(), fetchAdminAuditLogs()]);
       setEmailLogs(emails);
       setAuditLogs(logs);
-    } catch (err: any) {
-      setFeedbackMsg({ type: 'error', text: err.message || 'Test email dispatch failed.' });
+    } catch (err: unknown) {
+      setFeedbackMsg({ type: 'error', text: getErrorMessage(err, 'Test email dispatch failed.') });
     } finally {
       setDispatchingTest(false);
     }
@@ -169,8 +191,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentUser, onO
       const [emails, logs] = await Promise.all([fetchAllEmailLogs(), fetchAdminAuditLogs()]);
       setEmailLogs(emails);
       setAuditLogs(logs);
-    } catch (err: any) {
-      setFeedbackMsg({ type: 'error', text: err.message || 'Trigger failed.' });
+    } catch (err: unknown) {
+      setFeedbackMsg({ type: 'error', text: getErrorMessage(err, 'Trigger failed.') });
     } finally {
       setTriggeringDaily(false);
     }
@@ -185,8 +207,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentUser, onO
       const [emails, logs] = await Promise.all([fetchAllEmailLogs(), fetchAdminAuditLogs()]);
       setEmailLogs(emails);
       setAuditLogs(logs);
-    } catch (err: any) {
-      setFeedbackMsg({ type: 'error', text: err.message || 'Trigger failed.' });
+    } catch (err: unknown) {
+      setFeedbackMsg({ type: 'error', text: getErrorMessage(err, 'Trigger failed.') });
     } finally {
       setTriggeringAqi(false);
     }

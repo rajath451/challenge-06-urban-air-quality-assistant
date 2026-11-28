@@ -85,7 +85,7 @@ def assess_data_quality(timestamp_str: str, has_live_feed: bool = True) -> Dict[
             age_minutes = int((datetime.now(dt.tzinfo) - dt).total_seconds() / 60)
         else:
             age_minutes = int((now - dt).total_seconds() / 60)
-    except Exception:
+    except (ValueError, TypeError):
         age_minutes = 15
 
     if age_minutes < 0:

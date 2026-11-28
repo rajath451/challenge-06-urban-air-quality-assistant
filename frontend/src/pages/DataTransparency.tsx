@@ -6,7 +6,6 @@ import {
   Layers,
   Clock,
   BookOpen,
-  Info,
   Cpu,
   Wind
 } from 'lucide-react';
@@ -15,18 +14,14 @@ import { fetchTransparency } from '../services/api';
 
 export const DataTransparency: React.FC = () => {
   const [data, setData] = useState<TransparencyInfo | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
-      setIsLoading(true);
       try {
         const res = await fetchTransparency();
         setData(res);
       } catch (err) {
         console.error('Transparency load error:', err);
-      } finally {
-        setIsLoading(false);
       }
     }
     load();

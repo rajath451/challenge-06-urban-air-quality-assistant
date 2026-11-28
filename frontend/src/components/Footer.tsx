@@ -1,5 +1,7 @@
 import React from 'react';
-import { Wind, Shield, HeartHandshake, MapPin, ExternalLink, Activity, Info } from 'lucide-react';
+import { Wind, Shield, HeartHandshake, MapPin, Info } from 'lucide-react';
+
+const CURRENT_YEAR = new Date().getFullYear();
 
 interface FooterProps {
   onNavigate: (tab: string) => void;
@@ -168,7 +170,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenAuth, isAdmin 
           </div>
           <div className="text-right text-[11px] shrink-0">
             <p className="text-slate-400">
-              © {new Date().getFullYear()} VayuCoach • Challenge 06
+              © {CURRENT_YEAR} VayuCoach • Challenge 06
             </p>
             <p className="text-slate-400 text-[10px]">
               Built for Indian & Global Urban Environments
